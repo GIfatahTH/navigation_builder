@@ -112,7 +112,7 @@ class RouteData {
   final List<RouteData> _redirectedFrom;
 
   String get signature => '$uri$arguments${redirectedFrom?.uri}';
-  GlobalKey<NavigatorState>? navigationKey;
+  GlobalKey<NavigatorState>? navigatorKey;
 
   /// Object that holds information about the active route.
   RouteData({
@@ -124,7 +124,7 @@ class RouteData {
     required bool pathEndsWithSlash,
     required List<RouteData> redirectedFrom,
     required String subLocation,
-    required this.navigationKey,
+    required this.navigatorKey,
   })  : _pathEndsWithSlash = pathEndsWithSlash,
         _redirectedFrom = redirectedFrom {
     if (queryParams.isEmpty) {
@@ -134,7 +134,7 @@ class RouteData {
     }
   }
   factory RouteData.initial() => RouteData(
-        navigationKey: null,
+        navigatorKey: null,
         path: '/',
         location: '/',
         subLocation: '/',
@@ -200,7 +200,7 @@ class RouteData {
     GlobalKey<NavigatorState>? navigationKey,
   }) {
     return RouteData(
-      navigationKey: navigationKey ?? this.navigationKey,
+      navigatorKey: navigationKey ?? this.navigatorKey,
       path: path ?? this.path,
       location: location ?? this.location,
       queryParams: queryParams ?? this.queryParams,

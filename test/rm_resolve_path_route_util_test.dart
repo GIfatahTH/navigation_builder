@@ -63,12 +63,14 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
       expect(r.values, [const PageSettings(name: '/')]);
       expect(r['/']!.child, isA<Text>());
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -122,6 +124,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -129,6 +132,7 @@ void main() {
       expect(r['/']!.child, isA<RouteWidget>());
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -187,7 +191,7 @@ void main() {
             ),
       };
       var routeSetting = const RouteSettings(name: '/');
-      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       // )!;
@@ -196,7 +200,7 @@ void main() {
       // expect(r['/']!.child, isA<RouteWidget>());
       // expect((r['/'] as RouteSettingsWithRouteWidget).subRoute, isA<Text>());
       // //
-      // r = routePathResolver.getPagesFromRouteSettings(
+      // r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       //   skipHomeSlash: true,
@@ -258,6 +262,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/page1');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -269,6 +274,7 @@ void main() {
       expect((r['/'] as RouteSettingsWithRouteWidget).subRoute, null);
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -338,7 +344,7 @@ void main() {
             ),
       };
       var routeSetting = const RouteSettings(name: '/page1');
-      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       // )!;
@@ -348,7 +354,7 @@ void main() {
       // expect(r['/page1']!.child, isA<RouteWidget>());
       // expect(
       //     (r['/page1'] as RouteSettingsWithRouteWidget).subRoute, isA<Text>());
-      // r = routePathResolver.getPagesFromRouteSettings(
+      // r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       //   skipHomeSlash: true,
@@ -423,6 +429,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -434,6 +441,7 @@ void main() {
       // expect((r['/'] as RouteSettingsWithRouteWidget).subRoute, isA<Text>());
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -505,6 +513,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/page1');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -526,6 +535,7 @@ void main() {
 
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -610,6 +620,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/page1/page11');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -625,6 +636,7 @@ void main() {
       // //
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
         skipHomeSlash: true,
@@ -696,7 +708,7 @@ void main() {
             ),
       };
       var routeSetting = const RouteSettings(name: '/page1/page11');
-      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       // )!;
@@ -710,7 +722,7 @@ void main() {
       // expect((r['/page1'] as RouteSettingsWithRouteWidget).subRoute,
       //     isA<Center>());
 
-      // r = routePathResolver.getPagesFromRouteSettings(
+      // r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       //   skipHomeSlash: true,
@@ -785,7 +797,7 @@ void main() {
             ),
       };
       var routeSetting = const RouteSettings(name: '/page1/page11/page111');
-      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+      // Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       // )!;
@@ -796,7 +808,7 @@ void main() {
       //   const PageSettings(name: '/page1/page11/page111')
       // ]);
       // //
-      // r = routePathResolver.getPagesFromRouteSettings(
+      // r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
       //   routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
       //   settings: routeSetting,
       //   skipHomeSlash: true,
@@ -883,6 +895,7 @@ void main() {
       };
       var routeSetting = const RouteSettings(name: '/page1/page11/page111');
       Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: routeSetting,
       )!;
@@ -962,6 +975,7 @@ void main() {
       var routeSetting = const RouteSettings(name: '/page1/2');
       Map<String, RouteSettingsWithChildAndData> r =
           routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: {
           Uri(path: '/'): (_) => Container(),
           Uri(path: '/page1/:id'): (_) => const Text(''),
@@ -1050,6 +1064,7 @@ void main() {
       var routeSetting = const RouteSettings(name: '/');
       Map<String, RouteSettingsWithChildAndData> r =
           routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: {
           Uri(path: '/page1'): (_) => RouteWidget(
                 routes: {
@@ -1091,6 +1106,7 @@ void main() {
       // route name does not end with '/'
       var routeSetting = const RouteSettings(name: '/page1');
       routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: {
           Uri(path: '/page1'): (_) => RouteWidget(
                 routes: {
@@ -1152,7 +1168,7 @@ void main() {
   //   'routes are ordered in the right order',
   //   (tester) async {
   //     var routeSetting = const RouteSettings(name: '/page1/page11');
-  //     Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(
+  //     Map<String, PageSettings> r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: {
   //         '/page1': (_) => RouteWidget(
   //               routes: {
@@ -1169,7 +1185,7 @@ void main() {
   //       const PageSettings(name: '/page1/page11'),
   //     ]);
   //     //
-  //     r = routePathResolver.getPagesFromRouteSettings(
+  //     r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: {
   //         '/page1': (_) => RouteWidget(
   //               routes: {
@@ -1377,24 +1393,28 @@ void main() {
             ),
       };
       var r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/'),
       )!;
       expect((r['/']!.child as Text).data, '/');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/page1'),
       )!;
       expect((r['/page1']!.child as Text).data, '/page1');
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/page1/1'),
       )!;
       expect((r['/page1/1']!.child as Text).data, '/page1/1');
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/page1/1/page11'),
         skipHomeSlash: true,
@@ -1403,6 +1423,7 @@ void main() {
       expect((r['/page1/1/page11']!.child as Text).data, '/page1/1/page11');
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/page1/1/page12'),
       )!;
@@ -1427,13 +1448,13 @@ void main() {
   //     };
 
   //     Map<String, RouteSettingsWithChildAndData> r =
-  //         routePathResolver.getPagesFromRouteSettings(
+  //         routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
   //       settings: const RouteSettings(name: '/'),
   //     )!;
   //     expect(r['/']!.isBaseUrlChanged, true);
   //     //
-  //     r = routePathResolver.getPagesFromRouteSettings(
+  //     r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
   //       settings: const RouteSettings(name: '/page1'),
   //     )!;
@@ -1441,7 +1462,7 @@ void main() {
   //     print(r['/']!.isBaseUrlChanged);
   //     print(r['/page1']!.isBaseUrlChanged);
   //     //
-  //     r = routePathResolver.getPagesFromRouteSettings(
+  //     r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
   //       settings: const RouteSettings(name: '/page1/page11'),
   //     )!;
@@ -1450,7 +1471,7 @@ void main() {
   //     print(r['/page1']!.isBaseUrlChanged);
   //     print(r['/page1/page11']!.isBaseUrlChanged);
   //     //
-  //     r = routePathResolver.getPagesFromRouteSettings(
+  //     r = routePathResolver.getPagesFromRouteSettings(navigatorKey: null,
   //       routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
   //       settings: const RouteSettings(name: '/page1/page12'),
   //     )!;
@@ -1620,6 +1641,7 @@ void main() {
       }
 
       var r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: 'one/5'),
       )!;
@@ -1627,18 +1649,21 @@ void main() {
       expect(getValue(r.values.last), '/one/5');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/two/fffffffJJJJJJ'),
       )!;
       expect(getValue(r.values.last), '/two/fffffffJJJJJJ');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/three/one'),
       )!;
       expect(getValue(r.values.last), '404 /three/one');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/four/one'),
       )!;
@@ -1646,6 +1671,7 @@ void main() {
 
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/four/one1'),
       )!;
@@ -1653,50 +1679,59 @@ void main() {
 
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/four/three'),
       )!;
       expect(getValue(r.values.last), '/four/three');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/four/four'),
       )!;
       expect(getValue(r.values.last), '404 /four/four');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/five/5'),
       )!;
       expect(getValue(r.values.last), '404 /five/5');
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/six/6'),
       )!;
       expect(getValue(r.values.last), '404 /six/6');
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/six/one'),
       )!;
       expect(getValue(r.values.last), '/six/one');
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/six/two'),
       )!;
       expect(getValue(r.values.last), '/six/two');
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/six/one-two'),
       )!;
       expect(getValue(r.values.last), '404 /six/one-two');
 
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/seven/one/two/three'),
       )!;
       expect(getValue(r.values.last), '/seven/one/two/three');
       //
       r = routePathResolver.getPagesFromRouteSettings(
+        navigatorKey: null,
         routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
         settings: const RouteSettings(name: '/eight/one/two/three'),
       )!;
@@ -1715,6 +1750,7 @@ void main() {
 
       try {
         routePathResolver.getPagesFromRouteSettings(
+          navigatorKey: null,
           routes: routes.map((key, value) => MapEntry(Uri.parse(key), value)),
           settings: const RouteSettings(name: '/5'),
         )!;

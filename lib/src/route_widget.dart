@@ -355,6 +355,7 @@ class RouteWidget extends StatelessWidget {
     }
 
     final pages = routePathResolver.getPagesFromRouteSettings(
+      navigatorKey: null,
       routes: _routes,
       settings: RouteSettings(
         name: _path,

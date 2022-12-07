@@ -66,6 +66,7 @@ class ResolvePathRouteUtil {
     bool skipHomeSlash = false,
     List<RouteData> redirectedFrom = const [],
     bool ignoreUnknownRoutes = false,
+    required GlobalKey<NavigatorState>? navigatorKey,
   }) {
     final absolutePath = setAbsoluteUrlPath(settings.name!);
     final uri = Uri.parse(absolutePath);
@@ -77,6 +78,7 @@ class ResolvePathRouteUtil {
     inRoutes ??= routes;
     inRouteName ??= routeName;
     final pages = _ResolveLocation(
+      navigatorKey: navigatorKey,
       routes: routes,
       path: uri.path,
       arguments: arguments,
@@ -135,7 +137,10 @@ class _ResolveLocation {
   final ResolvePathRouteUtil util;
   final bool ignoreUnknownRoutes;
   final Widget Function(Widget route)? builder;
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   _ResolveLocation({
+    required this.navigatorKey,
     required this.routes,
     required this.path,
     required this.arguments,
@@ -209,7 +214,7 @@ class _ResolveLocation {
         queryParams: const {},
         pathEndsWithSlash: false,
         redirectedFrom: const [],
-        navigationKey: null,
+        navigatorKey: navigatorKey,
       );
       matched[path] = RouteSettingsWithChildAndData(
         routeData: routeData,
@@ -524,7 +529,7 @@ class _ResolveLocation {
         queryParams: addQueryParam ? {...queryParams} : const {},
         pathParams: {...pathParam},
         redirectedFrom: [...redirectedFrom],
-        navigationKey: null,
+        navigatorKey: navigatorKey,
       );
     }
 
@@ -576,7 +581,7 @@ class _ResolveLocation {
     pathParam.addAll(params);
 
     return RouteData(
-      navigationKey: null,
+      navigatorKey: navigatorKey,
       location: toLocation ?? parsedPathUrl,
       subLocation: parsedPathUrl,
       pathEndsWithSlash: remainingUrlSegments.isNotEmpty || pathEndsWithSlash,

@@ -7,7 +7,6 @@ import 'package:states_rebuilder/scr/state_management/state_management.dart';
 final _navigator = NavigationBuilder.create(routes: {
   '/': (data) {
     return Scaffold(
-      key: NavigationBuilder.scaffoldKey,
       body: Builder(
         builder: (ctx) {
           context = ctx;
@@ -20,7 +19,6 @@ final _navigator = NavigationBuilder.create(routes: {
   },
   '/page2': (data) {
     return Scaffold(
-      key: NavigationBuilder.scaffoldKey,
       body: Builder(
         builder: (ctx) {
           context = ctx;
@@ -52,13 +50,13 @@ void main() {
     );
 
     await tester.pumpWidget(widget);
-    expect(() => NavigationBuilder.scaffold.scaffoldState, throwsException);
-    expect(() => NavigationBuilder.scaffold.scaffoldMessengerState,
-        throwsAssertionError);
+    expect(() => _navigator.scaffold.scaffoldState, throwsException);
+    expect(
+        () => _navigator.scaffold.scaffoldMessengerState, throwsAssertionError);
 
-    NavigationBuilder.scaffold.context = context!;
-    expect(NavigationBuilder.scaffold.scaffoldState, isNotNull);
-    expect(NavigationBuilder.scaffold.scaffoldMessengerState, isNotNull);
+    _navigator.scaffold.context = context!;
+    expect(_navigator.scaffold.scaffoldState, isNotNull);
+    expect(_navigator.scaffold.scaffoldMessengerState, isNotNull);
   });
 
   testWidgets('showBottomSheet', (tester) async {
@@ -68,7 +66,8 @@ void main() {
         routeInformationParser: _navigator.routeInformationParser,
       ),
     );
-    NavigationBuilder.scaffold.showBottomSheet(
+    _navigator.scaffold.context = context!;
+    _navigator.scaffold.showBottomSheet(
       Text('showBottomSheet'),
       backgroundColor: Colors.red,
       clipBehavior: Clip.antiAlias,
@@ -77,6 +76,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('showBottomSheet'), findsOneWidget);
+    _navigator.back();
+    await tester.pumpAndSettle();
+    expect(find.text('showBottomSheet'), findsNothing);
   });
 
   testWidgets('hideCurrentSnackBar', (tester) async {
@@ -86,14 +88,14 @@ void main() {
         routeInformationParser: _navigator.routeInformationParser,
       ),
     );
-    NavigationBuilder.scaffold.showSnackBar(
+    _navigator.scaffold.showSnackBar(
         SnackBar(
           content: Text('showSnackBar'),
         ),
         hideCurrentSnackBar: false);
     await tester.pumpAndSettle();
     expect(find.text('showSnackBar'), findsOneWidget);
-    NavigationBuilder.scaffold.hideCurrentSnackBar();
+    _navigator.scaffold.hideCurrentSnackBar();
     await tester.pump();
     expect(find.text('showSnackBar'), findsOneWidget);
     await tester.pumpAndSettle();
@@ -107,14 +109,14 @@ void main() {
         routeInformationParser: _navigator.routeInformationParser,
       ),
     );
-    NavigationBuilder.scaffold.showSnackBar(
+    _navigator.scaffold.showSnackBar(
         SnackBar(
           content: Text('showSnackBar'),
         ),
         hideCurrentSnackBar: false);
     await tester.pumpAndSettle();
     expect(find.text('showSnackBar'), findsOneWidget);
-    NavigationBuilder.scaffold.removeCurrentSnackBarm();
+    _navigator.scaffold.removeCurrentSnackBarm();
     await tester.pump();
     expect(find.text('showSnackBar'), findsNothing);
   });
@@ -124,10 +126,17 @@ void main() {
       routerDelegate: _navigator.routerDelegate,
       routeInformationParser: _navigator.routeInformationParser,
     ));
-    NavigationBuilder.scaffold.openDrawer();
+    await tester.pumpAndSettle();
+    _navigator.scaffold.context = context!;
+    _navigator.scaffold.openDrawer();
     await tester.pumpAndSettle();
     expect(find.text('Drawer'), findsOneWidget);
-    NavigationBuilder.scaffold.openEndDrawer();
+    _navigator.back();
+    await tester.pumpAndSettle();
+    expect(find.text('Drawer'), findsNothing);
+    //
+    _navigator.scaffold.context = context!;
+    _navigator.scaffold.openEndDrawer();
     await tester.pumpAndSettle();
     expect(find.text('EndDrawer'), findsOneWidget);
     //

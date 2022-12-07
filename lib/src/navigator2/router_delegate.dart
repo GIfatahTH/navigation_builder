@@ -319,6 +319,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     required List<RouteData> redirectedFrom,
   }) {
     return _resolvePathRouteUtil.getPagesFromRouteSettings(
+      navigatorKey: navigatorKey,
       routes: _routes,
       settings: settings,
       queryParams: settings.queryParams,
@@ -354,7 +355,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       assert(settings.child != null);
       final s = RouteSettingsWithChildAndData(
         routeData: RouteData(
-          navigationKey: _navigatorKey,
+          navigatorKey: _navigatorKey,
           location: settings.name!,
           subLocation: settings is RouteSettingsWithChildAndData
               ? settings.routeData._subLocation
@@ -456,13 +457,32 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     }
   }
 
+  static Route<dynamic>? _willHandlePopInternally;
   bool _onPopPage(Route<dynamic> route, dynamic result) {
+    if (route.willHandlePopInternally) {
+      _willHandlePopInternally = route;
+    }
+    if (result == RouterDelegateImp) {
+      // THis is for pop bellow to only check if the route willHandlePopInternally
+      return false;
+    }
+
     if (delegateImplyLeadingToParent && this == RouterObjects.rootDelegate) {
-      // rootDelegatePop(result);
+      if (_lastLeafConfiguration!.rData!.navigatorKey != navigatorKey) {
+        // This is a work around to get the value of Route.willHandlePopInternally
+        // So that if the route can close a drawer for example, it will do it
+        _lastLeafConfiguration!.rData!.navigatorKey!.currentState
+            ?.pop(RouterDelegateImp);
+      }
+      if (_willHandlePopInternally != null) {
+        final didPop = _willHandlePopInternally!.didPop(result);
+        _willHandlePopInternally = null;
+        return didPop;
+      }
       message = 'Back';
       canLogMessage = false;
-      final r = RouterObjects._back(result, this);
 
+      final r = RouterObjects._back(result, this);
       if (r) {
         return false;
       }
@@ -480,6 +500,11 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
         // return true;
       }
       return false;
+    }
+    if (_willHandlePopInternally != null) {
+      final didPop = _willHandlePopInternally!.didPop(result);
+      _willHandlePopInternally = null;
+      return didPop;
     }
     if (delegateImplyLeadingToParent) {
       var r = RouterObjects._back(result, this);
@@ -503,7 +528,14 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
   }
 
   bool get _canPop {
-    return _pageSettingsList.length > 1;
+    if (_pageSettingsList.length > 1) {
+      return true;
+    }
+    // if (_lastLeafConfiguration.rData.canPop() == true) {
+    //   navigatorKey?.currentState?.canPop();
+    //   return true;
+    // }
+    return false;
   }
 
   bool _canPopUntil(String untilRouteName) {

@@ -247,7 +247,11 @@ abstract class RouterObjects {
 
   static bool _back<T extends Object?>(T? result, [RouterDelegateImp? d]) {
     final delegate = _toBack(d);
-    if (delegate == null || delegate == d || !delegate._canPop) {
+    if (delegate == null || delegate == d) {
+      return false;
+    }
+    if (!delegate._canPop) {
+      delegate.navigatorKey!.currentState!.maybePop<T>(result);
       return false;
     }
     delegate.navigatorKey!.currentState!.pop<T>(result);

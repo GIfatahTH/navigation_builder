@@ -5,6 +5,9 @@ final navigateObject = _Navigate();
 class _Navigate {
   ///get the NavigatorState
   NavigatorState get navigatorState {
+    // final key = RouterObjects.injectedNavigator!.routeData.navigatorKey;
+
+    // return key!.currentState!;
     final navigatorState = _navigatorKey.currentState;
     assert(navigatorState != null);
     return navigatorState!;
@@ -80,6 +83,7 @@ class _Navigate {
         unknownRoute:
             unknownRoute != null ? (data) => unknownRoute(data.location) : null,
         skipHomeSlash: true,
+        navigatorKey: null,
       )!;
 
       if (pages.isNotEmpty) {

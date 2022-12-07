@@ -20,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(SnackBar), findsOneWidget);
     expect(find.text('Nope.'), findsOneWidget);
-    NavigationBuilder.scaffold.hideCurrentSnackBar();
+    navigator.scaffold.hideCurrentSnackBar();
     await tester.pumpAndSettle();
     //
     await tester.tap(find.text('Pick an option, any option!'));

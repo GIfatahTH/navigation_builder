@@ -2419,12 +2419,138 @@ void main() {
       _navigator.back();
       await tester.pumpAndSettle();
       expect(find.text('/page2'), findsOneWidget);
-      // _navigator.back();
-      // await tester.pumpAndSettle();
-      // expect(find.text('/page1'), findsOneWidget);
-      // _navigator.back();
-      // await tester.pumpAndSettle();
-      // expect(find.text('/'), findsOneWidget);
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/page1'), findsOneWidget);
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'WHEN a drawer is opened and back is invoked'
+    'THEN the drawer is closed'
+    'case with sub routes',
+    (tester) async {
+      Map<String, BuildContext?> context = {};
+
+      Widget wrapWithScaffold(Text widget) {
+        return Scaffold(
+          drawer: Drawer(
+            child: widget,
+          ),
+          body: Builder(builder: (ctx) {
+            context[widget.data!] = ctx;
+            return widget;
+          }),
+        );
+      }
+
+      final routes = {
+        '/': (_) => wrapWithScaffold(const Text('/')),
+        '/page1': (_) => RouteWidget(
+              builder: (_) => _,
+              routes: {
+                '/': (_) => wrapWithScaffold(const Text('/page1')),
+              },
+            ),
+        '/page2': (_) => RouteWidget(
+              builder: (_) => _,
+              routes: {
+                '/': (_) => wrapWithScaffold(const Text('/page2')),
+                '/page21': (_) => wrapWithScaffold(const Text('/page21')),
+              },
+            ),
+      };
+      final widget = _TopWidget(routers: routes);
+      await tester.pumpWidget(widget);
+      _navigator.to('/page1');
+      await tester.pumpAndSettle();
+      _navigator.to('/page2');
+      await tester.pumpAndSettle();
+      expect(find.text('/page2'), findsOneWidget);
+      _navigator.to('/page2/page21');
+      await tester.pumpAndSettle();
+      expect(find.text('/page21'), findsOneWidget);
+      _navigator.scaffold.context = context['/page21']!;
+      _navigator.scaffold.openDrawer();
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(Drawer),
+        findsOneWidget,
+      );
+      expect(find.text('/page21'), findsNWidgets(2));
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/page21'), findsOneWidget);
+      expect(find.byType(Drawer), findsNothing);
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/page2'), findsOneWidget);
+      _navigator.scaffold.context = context['/page2']!;
+      _navigator.scaffold.openDrawer();
+      await tester.pumpAndSettle();
+      expect(find.text('/page2'), findsNWidgets(2));
+      expect(
+        find.byType(Drawer),
+        findsOneWidget,
+      );
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.byType(Drawer), findsNothing);
+      expect(find.text('/page2'), findsNWidgets(1));
+      //
+      _navigator.scaffold.context = context['/page2']!;
+      _navigator.scaffold.openDrawer();
+      await tester.pumpAndSettle();
+      expect(find.text('/page2'), findsNWidgets(2));
+      expect(
+        find.byType(Drawer),
+        findsOneWidget,
+      );
+      _navigator.scaffold.context = context['/page2']!;
+      Navigator.of(_navigator.scaffold.context).pop();
+      await tester.pumpAndSettle();
+      expect(find.byType(Drawer), findsNothing);
+      expect(find.text('/page2'), findsNWidgets(1));
+
+      //
+
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/page1'), findsOneWidget);
+
+      _navigator.scaffold.context = context['/page1']!;
+      _navigator.scaffold.openDrawer();
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(Drawer),
+        findsOneWidget,
+      );
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.byType(Drawer), findsNothing);
+      expect(find.text('/page1'), findsOneWidget);
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/'), findsOneWidget);
+      //
+      _navigator.scaffold.context = context['/']!;
+      _navigator.scaffold.openDrawer();
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(Drawer),
+        findsOneWidget,
+      );
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.byType(Drawer), findsNothing);
+      expect(find.text('/'), findsOneWidget);
+
+      _navigator.back();
+      await tester.pumpAndSettle();
+      expect(find.text('/'), findsOneWidget);
     },
   );
 
@@ -2807,8 +2933,7 @@ void main() {
               );
             }
 
-            NavigationBuilder.scaffold
-                .showSnackBar(const SnackBar(content: Text('')));
+            _navigator.scaffold.showSnackBar(const SnackBar(content: Text('')));
             return false;
           }
           if (showOtherDialog) {

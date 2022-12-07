@@ -52,7 +52,6 @@ part 'transitions.dart';
 /// See also [RouteData] and [RouteWidget]
 /// {@endtemplate}
 abstract class NavigationBuilder {
-  static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   static NavigationBuilder create({
     //ORDER OF routes is important (/signin, /) home is not used even if skipHome slash is false
     required Map<String, Widget Function(RouteData data)> routes,
@@ -98,12 +97,9 @@ abstract class NavigationBuilder {
   }
 
   /// Scaffold without BuildContext.
-  ///
-
-  static final scaffold = scaffoldObject;
+  final scaffold = scaffoldObject;
 
   /// Navigation without BuildContext.
-
   static final navigate = navigateObject;
 
   /// Predefined set of route transition animation
@@ -699,7 +695,8 @@ class InjectedNavigatorImp extends ReactiveModelImp<RouteData>
   late final VoidCallback _resetDefaultState;
 
   set routeData(RouteData value) {
-    if (state.signature != value.signature) {
+    if (state.signature != value.signature ||
+        state.navigatorKey != value.navigatorKey) {
       _state = value;
     }
   }

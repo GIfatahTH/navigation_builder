@@ -66,7 +66,7 @@ class SelectionButton extends StatelessWidget {
     // TODO You can push pageless route using `navigator.toPageless`
     // final result = await navigator.toPageless(const SelectionScreen());
     //
-    NavigationBuilder.scaffold.showSnackBar(SnackBar(content: Text('$result')));
+    navigator.scaffold.showSnackBar(SnackBar(content: Text('$result')));
   }
 }
 
