@@ -4,7 +4,9 @@ on:
   pull_request:
     branches:
       - master
-
+  push:
+    branches:
+      - dev
 jobs:
   flutter_test:
     name: Run flutter test and analyze
