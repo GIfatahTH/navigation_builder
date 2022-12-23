@@ -65,7 +65,7 @@ class _TopWidget extends StatelessWidget {
     bool shouldUseCupertinoPage = false,
     bool ignoreSingleRouteMapAssertion = true,
   }) : super(key: key) {
-    InjectedNavigatorImp.ignoreSingleRouteMapAssertion =
+    NavigationBuilderImp.ignoreSingleRouteMapAssertion =
         ignoreSingleRouteMapAssertion;
     _navigator = NavigationBuilder.create(
       routes: routers,
@@ -4055,7 +4055,7 @@ void main() {
   );
 
   testWidgets(
-    'Check InjectedNavigator.builder works',
+    'Check NavigationBuilder.builder works',
     (tester) async {
       _transitionsBuilder = NavigationBuilder.transitions.rightToLeft(
         duration: const Duration(seconds: 1),
@@ -4782,7 +4782,7 @@ void main() {
   );
 
   testWidgets(
-    'test InjectedNavigator.onNavigate',
+    'test NavigationBuilder.onNavigate',
     (tester) async {
       final routes = {
         '/': (data) => const Text('/'),
@@ -4916,7 +4916,7 @@ void main() {
   );
 
   testWidgets(
-    'Text Mocking InjectedNavigator',
+    'Text Mocking NavigationBuilder',
     (tester) async {
       final navigator = NavigationBuilder.create(
         routes: {
@@ -4925,10 +4925,12 @@ void main() {
         },
       );
 
-      final widget = MaterialApp.router(
+      MaterialApp.router(
         routeInformationParser: navigator.routeInformationParser,
         routerDelegate: navigator.routerDelegate,
       );
+
+      navigator.to('/page1');
       final mock = NavigatorMock();
       navigator.injectMock(mock);
       //
@@ -4936,16 +4938,13 @@ void main() {
       expect(mock.message, 'canPop');
       navigator.pageStack;
       expect(mock.message, 'pageStack');
-      try {
-        navigator.routeData;
-        expect(mock.message, 'routeData');
-      } catch (e) {
-        expect(e is UnimplementedError, true);
-      }
+
       navigator.back();
       expect(mock.message, 'back');
       navigator.backUntil('untilRouteName');
       expect(mock.message, 'backUntil');
+      navigator.backAndToNamed('routeName');
+      expect(mock.message, 'backAndToNamed');
       navigator.forceBack();
       expect(mock.message, 'forceBack');
       navigator.setRouteStack((pages) => pages);
@@ -4960,10 +4959,72 @@ void main() {
       expect(mock.message, 'toPageless');
       navigator.toReplacement('routeName');
       expect(mock.message, 'toReplacement');
+      //
+      navigator.toBottomSheet(const Text('HI'));
+      expect(mock.message, 'toBottomSheet');
+      navigator.toCupertinoDialog(const Text('HI'));
+      expect(mock.message, 'toCupertinoDialog');
+      navigator.toDialog(const Text('HI'));
+      expect(mock.message, 'toDialog');
+      navigator.canPop;
+      expect(mock.message, 'canPop');
+    },
+  );
+
+  testWidgets(
+    'Text Mocking NavigationBuilder get thr wright route location',
+    (tester) async {
+      bool isLogged = false;
+      final navigator = NavigationBuilder.create(
+        initialLocation: '/page1',
+        routes: {
+          '/': (data) => const Text('/'),
+          '/page1': (data) => const Text('Page1'),
+          '/page2': (data) => const Text('Page2'),
+          '/page3': (data) => data.redirectTo('/page4'),
+          '/page4': (data) => const Text('Page4'),
+          '/page5': (data) => const Text('Page5'),
+          '/page6': (data) => const Text('Page6'),
+          '/page7': (data) => () {
+                return Text(data.arguments);
+              }(),
+        },
+        onNavigate: (data) {
+          if (data.location == '/page5') {
+            return data.redirectTo('/page6');
+          }
+
+          if (isLogged && data.location != '/') {
+            return data.redirectTo('/');
+          }
+        },
+      );
+      final mock = NavigatorMock();
+      navigator.injectMock(mock);
+      //
+      expect(navigator.routeData.location, '/page1');
+      navigator.to('/page2');
+      expect(navigator.routeData.location, '/page2');
+      navigator.to('/page3');
+      expect(navigator.routeData.location, '/page4');
+      navigator.to('/page5');
+      expect(navigator.routeData.location, '/page6');
+      //
+      navigator.to('/page7');
+      expect(navigator.routeData.location, '/page7');
+      expect(mock.routeData.location, '/page7');
+      //
+      isLogged = true;
+      navigator.onNavigate();
+      expect(mock.routeData.location, '/');
+      expect(navigator.routeData.location, '/');
+      //
+      navigator.back();
+      expect(navigator.routeData.location, '/');
     },
   );
   testWidgets(
-    'Test InjectedNavigator.toReplacement for nested routes',
+    'Test NavigationBuilder.toReplacement for nested routes',
     (tester) async {
       final navigator = NavigationBuilder.create(
         routes: {
@@ -5024,7 +5085,7 @@ void main() {
   );
 
   testWidgets(
-    'Test InjectedNavigator.toAndRemoveUntil for nested routes',
+    'Test NavigationBuilder.toAndRemoveUntil for nested routes',
     (tester) async {
       final navigator = NavigationBuilder.create(
         routes: {
@@ -5085,7 +5146,7 @@ void main() {
   );
 
   testWidgets(
-    'Test InjectedNavigator.navigator for nested routes',
+    'Test NavigationBuilder.navigator for nested routes',
     (tester) async {
       final navigator = NavigationBuilder.create(
         initialLocation: '/page1/page11/page111',
@@ -5763,7 +5824,7 @@ void main() {
   );
 
   // group(
-  //   'InjectedNavigator is disposed between tests',
+  //   'NavigationBuilder is disposed between tests',
   //   () {
   //     final navigator = NavigationBuilder.create(
   //       routes: {
@@ -5958,11 +6019,11 @@ class NavigatorMock extends NavigationBuilder {
     return [];
   }
 
-  @override
-  RouteData get routeData {
-    message = 'routeData';
-    throw UnimplementedError();
-  }
+  // @override
+  // RouteData get routeData {
+  //   message = 'routeData';
+  //   throw UnimplementedError();
+  // }
 
   @override
   void setRouteStack(
@@ -6020,5 +6081,58 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'toReplacement';
+  }
+
+  @override
+  Future<T?> backAndToNamed<T extends Object?, TO extends Object?>(
+      String routeName,
+      {TO? result,
+      Object? arguments,
+      bool fullscreenDialog = false,
+      bool maintainState = true}) async {
+    message = 'backAndToNamed';
+  }
+
+  @override
+  void removePage<T extends Object>(String routeName, [T? result]) {
+    message = 'backAndToNamed';
+  }
+
+  @override
+  Future<T?> toBottomSheet<T>(Widget bottomSheet,
+      {bool isDismissible = true,
+      bool enableDrag = true,
+      bool isScrollControlled = false,
+      Color? backgroundColor,
+      double? elevation,
+      ShapeBorder? shape,
+      Clip? clipBehavior,
+      Color? barrierColor,
+      bool postponeToNextFrame = false}) async {
+    message = 'toBottomSheet';
+  }
+
+  @override
+  Future<T?> toCupertinoDialog<T>(Widget dialog,
+      {bool barrierDismissible = false,
+      bool postponeToNextFrame = false}) async {
+    message = 'toCupertinoDialog';
+  }
+
+  @override
+  Future<T?> toCupertinoModalPopup<T>(Widget cupertinoModalPopup,
+      {ImageFilter? filter,
+      bool? semanticsDismissible,
+      bool postponeToNextFrame = false}) async {
+    message = 'toCupertinoModalPopup';
+  }
+
+  @override
+  Future<T?> toDialog<T>(Widget dialog,
+      {bool barrierDismissible = true,
+      Color? barrierColor,
+      bool useSafeArea = true,
+      bool postponeToNextFrame = false}) async {
+    message = 'toDialog';
   }
 }

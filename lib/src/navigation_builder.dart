@@ -25,7 +25,7 @@ part 'route_widget.dart';
 part 'sub_route.dart';
 part 'transitions.dart';
 
-///{@template InjectedNavigator}
+///{@template NavigationBuilder}
 /// Injecting a Navigator 2 that holds a [RouteData] state.
 ///
 /// ```dart
@@ -74,7 +74,7 @@ abstract class NavigationBuilder {
     bool ignoreUnknownRoutes = false,
     List<NavigatorObserver> navigatorObservers = const [],
   }) {
-    return InjectedNavigatorImp(
+    return NavigationBuilderImp(
       routes: routes,
       unknownRoute: unknownRoute,
       transitionsBuilder: transitionsBuilder,
@@ -97,7 +97,7 @@ abstract class NavigationBuilder {
   }
 
   /// Scaffold without BuildContext.
-  final scaffold = scaffoldObject;
+  late final scaffold = scaffoldObject.._mock = _mock;
 
   /// Navigation without BuildContext.
   static final navigate = navigateObject;
@@ -153,7 +153,7 @@ abstract class NavigationBuilder {
     String? subRouteName,
   }) {
     if (_mock != null) {
-      return _mock!.setRouteStack(stack, subRouteName: subRouteName);
+      _mock!.setRouteStack(stack, subRouteName: subRouteName);
     }
     return navigateObject.setRouteStack(stack, subRouteName: subRouteName);
   }
@@ -167,7 +167,12 @@ abstract class NavigationBuilder {
   }
 
   /// Get the current [RouteData]
-  RouteData get routeData => throw UnimplementedError();
+  RouteData get routeData {
+    if (_mock != null) {
+      return (_mock as NavigationBuilderImp).routeData;
+    }
+    throw UnimplementedError();
+  }
 
   /// Find the page with given routeName and add it to the route stack and trigger
   /// route transition.
@@ -191,6 +196,16 @@ abstract class NavigationBuilder {
     )?
         transitionsBuilder,
   }) {
+    final r = navigateObject.toNamed<T>(
+      routeName,
+      builder: builder,
+      arguments: arguments,
+      queryParams: queryParams,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+      transitionsBuilder: transitionsBuilder,
+    );
+
     if (_mock != null) {
       return _mock!.to<T>(
         routeName,
@@ -202,16 +217,7 @@ abstract class NavigationBuilder {
         transitionsBuilder: transitionsBuilder,
       );
     }
-
-    return navigateObject.toNamed<T>(
-      routeName,
-      builder: builder,
-      arguments: arguments,
-      queryParams: queryParams,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-      transitionsBuilder: transitionsBuilder,
-    );
+    return r;
   }
 
   /// Push a pageless route
@@ -230,6 +236,13 @@ abstract class NavigationBuilder {
     // )?
     //     transitionsBuilder,
   }) {
+    final r = navigateObject.to<T>(
+      page,
+      name: name,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+      // transitionsBuilder: transitionsBuilder,
+    );
     if (_mock != null) {
       return _mock!.toPageless<T>(
         page,
@@ -239,14 +252,7 @@ abstract class NavigationBuilder {
         // transitionsBuilder: transitionsBuilder,
       );
     }
-
-    return navigateObject.to<T>(
-      page,
-      name: name,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-      // transitionsBuilder: transitionsBuilder,
-    );
+    return r;
   }
 
   // Future<T?> toReplacementPageless<T extends Object?, TO extends Object?>(
@@ -258,7 +264,7 @@ abstract class NavigationBuilder {
   //   // transitionsBuilder,
   // }) {
   //   if (_mock != null) {
-  //     return _mock!.toReplacementPageless<T, TO>(
+  //     _mock!.toReplacementPageless<T, TO>(
   //       page,
   //       name: name,
   //       fullscreenDialog: fullscreenDialog,
@@ -278,7 +284,9 @@ abstract class NavigationBuilder {
 
   /// Whether a page can be popped off from the root route stack or sub route
   /// stacks.
-  bool get canPop => throw UnimplementedError();
+  bool get canPop {
+    throw UnimplementedError();
+  }
 
   /// Deeply navigate to the given routeName. Deep navigation means that the
   /// root stack is cleaned and pages corresponding to sub paths are added to
@@ -310,16 +318,6 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
   }) {
-    if (_mock != null) {
-      return _mock!.toDeeply(
-        routeName,
-        arguments: arguments,
-        queryParams: queryParams,
-        fullscreenDialog: fullscreenDialog,
-        maintainState: maintainState,
-      );
-    }
-
     RouterObjects.clearStack();
     final pathSegments = Uri.parse(routeName).pathSegments;
 
@@ -345,6 +343,15 @@ abstract class NavigationBuilder {
           maintainState: maintainState,
         );
       }
+      if (_mock != null) {
+        _mock!.toDeeply(
+          routeName,
+          arguments: arguments,
+          queryParams: queryParams,
+          fullscreenDialog: fullscreenDialog,
+          maintainState: maintainState,
+        );
+      }
     }
   }
 
@@ -360,6 +367,14 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
   }) {
+    final r = navigateObject.toReplacementNamed<T, TO>(
+      routeName,
+      result: result,
+      arguments: arguments,
+      queryParams: queryParams,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+    );
     if (_mock != null) {
       return _mock!.toReplacement<T, TO>(
         routeName,
@@ -370,15 +385,7 @@ abstract class NavigationBuilder {
         maintainState: maintainState,
       );
     }
-
-    return navigateObject.toReplacementNamed<T, TO>(
-      routeName,
-      result: result,
-      arguments: arguments,
-      queryParams: queryParams,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-    );
+    return r;
   }
 
   /// Find the page with given routeName and then remove all the previous routes
@@ -395,17 +402,7 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
   }) {
-    if (_mock != null) {
-      return _mock!.toAndRemoveUntil<T>(
-        newRouteName,
-        untilRouteName: untilRouteName,
-        arguments: arguments,
-        queryParams: queryParams,
-        fullscreenDialog: fullscreenDialog,
-        maintainState: maintainState,
-      );
-    }
-    return navigateObject.toNamedAndRemoveUntil<T>(
+    final r = navigateObject.toNamedAndRemoveUntil<T>(
       newRouteName,
       untilRouteName: untilRouteName,
       arguments: arguments,
@@ -413,6 +410,19 @@ abstract class NavigationBuilder {
       fullscreenDialog: fullscreenDialog,
       maintainState: maintainState,
     );
+    if (_mock != null) {
+      try {
+        return _mock!.toAndRemoveUntil<T>(
+          newRouteName,
+          untilRouteName: untilRouteName,
+          arguments: arguments,
+          queryParams: queryParams,
+          fullscreenDialog: fullscreenDialog,
+          maintainState: maintainState,
+        );
+      } catch (e) {}
+    }
+    return r;
   }
 
   /// Navigate back and remove all the previous routes until meeting the route
@@ -421,7 +431,7 @@ abstract class NavigationBuilder {
   /// It is similar to `_navigate.backUntil` method.
   void backUntil(String untilRouteName) {
     if (_mock != null) {
-      return _mock!.backUntil(untilRouteName);
+      _mock!.backUntil(untilRouteName);
     }
     return navigateObject.backUntil(untilRouteName);
   }
@@ -443,6 +453,13 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
   }) {
+    final r = navigateObject.backAndToNamed<T, TO>(
+      routeName,
+      result: result,
+      arguments: arguments,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+    );
     if (_mock != null) {
       return _mock!.backAndToNamed<T, TO>(
         routeName,
@@ -452,13 +469,7 @@ abstract class NavigationBuilder {
         maintainState: maintainState,
       );
     }
-    return navigateObject.backAndToNamed<T, TO>(
-      routeName,
-      result: result,
-      arguments: arguments,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-    );
+    return r;
   }
 
   /// {@macro forceBack}
@@ -473,7 +484,7 @@ abstract class NavigationBuilder {
   /// Remove a pages from the route stack.
   void removePage<T extends Object>(String routeName, [T? result]) {
     if (_mock != null) {
-      return _mock!.removePage<T>(routeName, result);
+      _mock!.removePage<T>(routeName, result);
     }
     RouterObjects.removePage<T>(
       routeName: routeName,
@@ -483,7 +494,9 @@ abstract class NavigationBuilder {
   }
 
   /// Invoke `onNavigate` callback and navigate according the logic defined there.
-  void onNavigate() => throw UnimplementedError();
+  void onNavigate() {
+    throw UnimplementedError();
+  }
 
   /// Used in test to simulate a deep link call.
   void deepLinkTest(String url) {
@@ -495,9 +508,10 @@ abstract class NavigationBuilder {
 
   NavigationBuilder? _mock;
 
-  /// Mock InjectedNavigator
-  void injectMock(NavigationBuilder mock) {
+  /// Mock NavigationBuilder
+  void injectMock(NavigationBuilder mock, {String? startRoute}) {
     assert(() {
+      mock._mock = this;
       _mock = mock;
       return true;
     }());
@@ -511,6 +525,15 @@ abstract class NavigationBuilder {
     bool useSafeArea = true,
     bool postponeToNextFrame = false,
   }) {
+    if (_mock != null) {
+      return _mock!.toDialog(
+        dialog,
+        barrierColor: barrierColor,
+        barrierDismissible: barrierDismissible,
+        useSafeArea: useSafeArea,
+        postponeToNextFrame: postponeToNextFrame,
+      );
+    }
     return navigateObject.toDialog<T>(
       dialog,
       barrierColor: barrierColor,
@@ -525,12 +548,21 @@ abstract class NavigationBuilder {
     Widget dialog, {
     bool barrierDismissible = false,
     bool postponeToNextFrame = false,
-  }) =>
-      navigateObject.toCupertinoDialog<T>(
+  }) {
+    if (_mock != null) {
+      return _mock!.toCupertinoDialog<T>(
         dialog,
         barrierDismissible: barrierDismissible,
         postponeToNextFrame: postponeToNextFrame,
       );
+    }
+
+    return navigateObject.toCupertinoDialog<T>(
+      dialog,
+      barrierDismissible: barrierDismissible,
+      postponeToNextFrame: postponeToNextFrame,
+    );
+  }
 
   /// {@macro toBottomSheet}
   Future<T?> toBottomSheet<T>(
@@ -544,8 +576,9 @@ abstract class NavigationBuilder {
     Clip? clipBehavior,
     Color? barrierColor,
     bool postponeToNextFrame = false,
-  }) =>
-      navigateObject.toBottomSheet<T>(
+  }) {
+    if (_mock != null) {
+      return _mock!.toBottomSheet<T>(
         bottomSheet,
         isDismissible: isDismissible,
         enableDrag: enableDrag,
@@ -557,6 +590,20 @@ abstract class NavigationBuilder {
         barrierColor: barrierColor,
         postponeToNextFrame: postponeToNextFrame,
       );
+    }
+    return navigateObject.toBottomSheet<T>(
+      bottomSheet,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      isScrollControlled: isScrollControlled,
+      backgroundColor: backgroundColor,
+      elevation: elevation,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      barrierColor: barrierColor,
+      postponeToNextFrame: postponeToNextFrame,
+    );
+  }
 
   /// {@macro toCupertinoModalPopup}
   Future<T?> toCupertinoModalPopup<T>(
@@ -564,13 +611,23 @@ abstract class NavigationBuilder {
     ImageFilter? filter,
     bool? semanticsDismissible,
     bool postponeToNextFrame = false,
-  }) =>
-      navigateObject.toCupertinoModalPopup<T>(
+  }) {
+    if (_mock != null) {
+      return _mock!.toCupertinoModalPopup<T>(
         cupertinoModalPopup,
         filter: filter,
         semanticsDismissible: semanticsDismissible,
         postponeToNextFrame: postponeToNextFrame,
       );
+    }
+
+    return navigateObject.toCupertinoModalPopup<T>(
+      cupertinoModalPopup,
+      filter: filter,
+      semanticsDismissible: semanticsDismissible,
+      postponeToNextFrame: postponeToNextFrame,
+    );
+  }
 }
 
 class ReactiveModelImp<T> {
@@ -596,9 +653,9 @@ class ReactiveModelImp<T> {
   }
 }
 
-class InjectedNavigatorImp extends ReactiveModelImp<RouteData>
+class NavigationBuilderImp extends ReactiveModelImp<RouteData>
     with NavigationBuilder {
-  InjectedNavigatorImp({
+  NavigationBuilderImp({
     required Map<String, Widget Function(RouteData data)> routes,
     required Widget Function(RouteData)? unknownRoute,
     required Widget Function(
@@ -632,10 +689,21 @@ class InjectedNavigatorImp extends ReactiveModelImp<RouteData>
         shouldUseCupertinoPage: shouldUseCupertinoPage,
         observers: navigatorObservers,
       );
-      RouterObjects.injectedNavigator = this;
+      RouterObjects.navigationBuilder = this;
     };
   }
   bool _isInitialized = false;
+  @override
+  void injectMock(NavigationBuilder mock, {String? startRoute}) {
+    super.injectMock(mock);
+    routerDelegate;
+    if (startRoute != null) {
+      RouterObjects._initialRouteValue = startRoute;
+    }
+    routeInformationParser.parseRouteInformation(RouteInformation(
+      location: RouterObjects._initialRouteValue,
+    ));
+  }
 
   @override
   RouterDelegate<PageSettings> get routerDelegate {
@@ -711,7 +779,7 @@ class InjectedNavigatorImp extends ReactiveModelImp<RouteData>
   @override
   bool get canPop {
     if (_mock != null) {
-      return _mock!.canPop;
+      _mock!.canPop;
     }
     // states_builder_rm.ReactiveStatelessWidget.addToObs?.call(this);
     return RouterObjects.canPop;
@@ -719,8 +787,9 @@ class InjectedNavigatorImp extends ReactiveModelImp<RouteData>
 
   @override
   RouteData get routeData {
-    if (_mock != null) {
-      return _mock!.routeData;
+    if (!_isInitialized) {
+      _isInitialized = true;
+      _resetDefaultState();
     }
     return state;
   }

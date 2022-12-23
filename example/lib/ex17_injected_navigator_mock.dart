@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
-// If your business logic depends on InjectedNavigator, you can mock it for
+// If your business logic depends on NavigationBuilder, you can mock it for
 // unit tests
 
 void main() {
@@ -18,7 +18,7 @@ final navigator = NavigationBuilder.create(
 Future<int> methodToTest1() async {
   await Future.delayed(const Duration(seconds: 1));
   // Because this line this method can not be unit tested
-  // without mocking the InjectedNavigator dependency.
+  // without mocking the NavigationBuilder dependency.
   // See the corresponding test file
   navigator.back();
   return 10;

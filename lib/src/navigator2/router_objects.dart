@@ -24,7 +24,7 @@ abstract class RouterObjects {
 
   /// It is used to reduce the default animation duration to zero.
   static bool? isTransitionAnimated;
-  static InjectedNavigatorImp? injectedNavigator;
+  static NavigationBuilderImp? navigationBuilder;
 
   static Map<Uri, Widget Function(RouteData data)> transformRoutes(
       Map<String, Widget Function(RouteData data)> r) {
@@ -63,7 +63,7 @@ abstract class RouterObjects {
       routes: routers!,
       builder: builder != null
           ? (route) {
-              final r = injectedNavigator?.routeData ??
+              final r = navigationBuilder?.routeData ??
                   ParentToSubRouteMessage.parentToSubRouteMessage.routeData;
               return SubRoute._(
                 key: ValueKey(
@@ -354,8 +354,9 @@ abstract class RouterObjects {
   }
 
   static void _dispose() {
-    injectedNavigator?.dispose();
-    injectedNavigator = null;
+    print('dispozed');
+    navigationBuilder?.dispose();
+    navigationBuilder = null;
     rootDelegate = null;
     if (navigatorObservers.isNotEmpty) {
       navigatorObservers.clear();

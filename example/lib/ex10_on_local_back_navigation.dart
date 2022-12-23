@@ -3,7 +3,7 @@ import 'package:navigation_builder/navigation_builder.dart';
 import 'package:states_rebuilder/scr/development_booster/development_booster.dart';
 import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
-// Example of navigation guard that used the API `InjectedNavigator.onNavigateBack`
+// Example of navigation guard that used the API `NavigationBuilder.onNavigateBack`
 // to prevent leaving from a page before validating its data.
 
 void main() {

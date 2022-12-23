@@ -73,7 +73,7 @@ void main() {
   );
 
   testWidgets(
-    'InjectedNavigator is reset between tests',
+    'NavigationBuilder is reset between tests',
     (tester) async {
       expect(navigator.routeData.location, '/');
     },

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
-// This example show the difference between InjectedNavigator.to and
-// InjectedNavigator.toDeeply methods
+// This example show the difference between NavigationBuilder.to and
+// NavigationBuilder.toDeeply methods
 void main() {
   NavigationBuilder.transitionsBuilder = NavigationBuilder.transitions
       .bottomToUp(duration: const Duration(milliseconds: 3000));

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
-// In this example, show the use of the InjectedNavigator.builder method to wrap
+// In this example, show the use of the NavigationBuilder.builder method to wrap
 // the app inside the body of the scaffold and the appBar that used a fixed
 // navigation menu
 

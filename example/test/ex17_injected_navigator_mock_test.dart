@@ -44,7 +44,7 @@ void main() {
 }
 
 // A better solution is to use Mockito or Mocktail libraries
-// class NavigatorMock extends Mock implements InjectedNavigator{}
+// class NavigatorMock extends Mock implements NavigationBuilder{}
 
 class NavigatorMock extends NavigationBuilder {
   bool isBackMethodCalled = false;
