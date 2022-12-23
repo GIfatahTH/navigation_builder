@@ -91,11 +91,6 @@ abstract class NavigationBuilder {
     );
   }
 
-  void disposeAll() {
-    scaffold.dispose();
-    navigate.dispose();
-  }
-
   /// Scaffold without BuildContext.
   late final scaffold = scaffoldObject.._mock = _mock;
 
@@ -236,14 +231,9 @@ abstract class NavigationBuilder {
     // )?
     //     transitionsBuilder,
   }) {
-    final r = navigateObject.to<T>(
-      page,
-      name: name,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-      // transitionsBuilder: transitionsBuilder,
-    );
     if (_mock != null) {
+      // As pageless routing need a navigationState, We must return the mocked
+      // toPageless
       return _mock!.toPageless<T>(
         page,
         name: name,
@@ -252,7 +242,13 @@ abstract class NavigationBuilder {
         // transitionsBuilder: transitionsBuilder,
       );
     }
-    return r;
+    return navigateObject.to<T>(
+      page,
+      name: name,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+      // transitionsBuilder: transitionsBuilder,
+    );
   }
 
   // Future<T?> toReplacementPageless<T extends Object?, TO extends Object?>(
@@ -453,13 +449,6 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
   }) {
-    final r = navigateObject.backAndToNamed<T, TO>(
-      routeName,
-      result: result,
-      arguments: arguments,
-      fullscreenDialog: fullscreenDialog,
-      maintainState: maintainState,
-    );
     if (_mock != null) {
       return _mock!.backAndToNamed<T, TO>(
         routeName,
@@ -469,7 +458,14 @@ abstract class NavigationBuilder {
         maintainState: maintainState,
       );
     }
-    return r;
+    return navigateObject.backAndToNamed<T, TO>(
+      routeName,
+      result: result,
+      arguments: arguments,
+      fullscreenDialog: fullscreenDialog,
+      maintainState: maintainState,
+    );
+    ;
   }
 
   /// {@macro forceBack}
@@ -510,6 +506,7 @@ abstract class NavigationBuilder {
 
   /// Mock NavigationBuilder
   void injectMock(NavigationBuilder mock, {String? startRoute}) {
+    dispose();
     assert(() {
       mock._mock = this;
       _mock = mock;
@@ -628,33 +625,14 @@ abstract class NavigationBuilder {
       postponeToNextFrame: postponeToNextFrame,
     );
   }
-}
-
-class ReactiveModelImp<T> {
-  T Function() creator;
-
-  ReactiveModelImp({
-    required this.creator,
-  });
-  late T _state;
-  T? _initialState;
-  T get state {
-    if (_initialState != null) {
-      return _state;
-    }
-    _initialState = creator();
-    return _state = _initialState!;
-  }
 
   void dispose() {
-    if (_initialState != null) {
-      _state = _initialState!;
-    }
+    scaffold.dispose();
+    navigate.dispose();
   }
 }
 
-class NavigationBuilderImp extends ReactiveModelImp<RouteData>
-    with NavigationBuilder {
+class NavigationBuilderImp extends NavigationBuilder {
   NavigationBuilderImp({
     required Map<String, Widget Function(RouteData data)> routes,
     required Widget Function(RouteData)? unknownRoute,
@@ -671,14 +649,9 @@ class NavigationBuilderImp extends ReactiveModelImp<RouteData>
     required this.onBack,
     required this.ignoreUnknownRoutes,
     required List<NavigatorObserver> navigatorObservers,
-  })  : _redirectTo = redirectTo,
-        super(
-          creator: () => initialRouteData,
-          // initialState: initialRouteData,
-          // autoDisposeWhenNotUsed: true,
-          // stateInterceptorGlobal: null,
-        ) {
+  }) : _redirectTo = redirectTo {
     _resetDefaultState = () {
+      _routeData = initialRouteData;
       RouterObjects.initialize(
         routes: routes,
         unknownRoute: unknownRoute,
@@ -762,20 +735,6 @@ class NavigationBuilderImp extends ReactiveModelImp<RouteData>
 
   late final VoidCallback _resetDefaultState;
 
-  set routeData(RouteData value) {
-    if (state.signature != value.signature ||
-        state.navigatorKey != value.navigatorKey) {
-      _state = value;
-    }
-  }
-
-  @override
-  void dispose() {
-    _isInitialized = false;
-    // _resetDefaultState();
-    super.dispose();
-  }
-
   @override
   bool get canPop {
     if (_mock != null) {
@@ -785,12 +744,29 @@ class NavigationBuilderImp extends ReactiveModelImp<RouteData>
     return RouterObjects.canPop;
   }
 
+  RouteData? _routeData;
+
+  set routeData(RouteData value) {
+    if (routeData.signature != value.signature ||
+        routeData.navigatorKey != value.navigatorKey) {
+      _routeData = value;
+    }
+  }
+
   @override
   RouteData get routeData {
     if (!_isInitialized) {
       _isInitialized = true;
       _resetDefaultState();
     }
-    return state;
+    return _routeData!;
+  }
+
+  @override
+  void dispose() {
+    if (_isInitialized) {
+      _isInitialized = false;
+      super.dispose();
+    }
   }
 }

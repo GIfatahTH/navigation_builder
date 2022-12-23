@@ -270,11 +270,13 @@ No valid BuildContext is defined yet
     if (_mock != null) {
       return _mock!.scaffold.openDrawer();
     }
-    RouterObjects.navigationBuilder?.back();
-    // scaffoldState.openDrawer();
+    scaffoldState.openDrawer();
     _context = null;
   }
 
+  /// Close the Drawer if it is opened.
+  ///
+  /// You can close the drawer by just calling [NavigationBuilder.back]
   void closeDrawer<T>() {
     if (_mock != null) {
       return _mock!.scaffold.closeDrawer();
@@ -310,6 +312,9 @@ No valid BuildContext is defined yet
     _context = null;
   }
 
+  /// Close the EndDrawer if it is opened.
+  ///
+  /// You can close the EndDrawer by just calling [NavigationBuilder.back]
   void closeEndDrawer<T>() {
     if (_mock != null) {
       return _mock!.scaffold.closeEndDrawer();

@@ -354,7 +354,6 @@ abstract class RouterObjects {
   }
 
   static void _dispose() {
-    print('dispozed');
     navigationBuilder?.dispose();
     navigationBuilder = null;
     rootDelegate = null;
