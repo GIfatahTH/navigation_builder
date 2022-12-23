@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:navigation_builder/src/navigation_builder.dart';
 
 void main() {
-  InjectedNavigatorImp.ignoreSingleRouteMapAssertion = true;
+  NavigationBuilderImp.ignoreSingleRouteMapAssertion = true;
   late ResolvePathRouteUtil routePathResolver;
   setUp(() {
     routePathResolver = ResolvePathRouteUtil();

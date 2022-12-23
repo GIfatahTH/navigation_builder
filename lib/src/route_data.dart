@@ -98,7 +98,7 @@ class RouteData {
   /// The unknown route widget
   Widget get unKnownRoute =>
       RouterObjects.rootDelegate!._lastConfiguration != null &&
-              RouterObjects.injectedNavigator!.ignoreUnknownRoutes
+              RouterObjects.navigationBuilder!.ignoreUnknownRoutes
           ? const Redirect(null)
           : RouterObjects._unknownRoute(this);
 
@@ -161,8 +161,9 @@ class RouteData {
     if (redirectedFrom == null) {
       return 'RouteData(location: $location, baseUrl: $baseLocation, routePath: $path, queryParams: $queryParams, pathParams: $pathParams, arguments: $arguments)';
     }
-    return 'RouteData(directedFrom: $redirectedFrom, urlPath: $location, baseUrl: $baseLocation, routePath: $path, '
-        'queryParams: $queryParams, pathParams: $pathParams, arguments: $arguments)';
+    return 'RouteData(urlPath: $location, baseUrl: $baseLocation, routePath: $path, '
+        'queryParams: $queryParams, pathParams: $pathParams, arguments: $arguments, '
+        'directedFrom: $redirectedFrom, )';
   }
 
   @override

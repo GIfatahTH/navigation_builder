@@ -177,7 +177,7 @@ class RouteWidget extends StatelessWidget {
     this.delegateImplyLeadingToParent,
     // Key? key,
   })  : assert(builder != null || routes.isNotEmpty),
-        assert(InjectedNavigatorImp.ignoreSingleRouteMapAssertion ||
+        assert(NavigationBuilderImp.ignoreSingleRouteMapAssertion ||
             routes.isEmpty ||
             routes.length > 1),
         _parentToSubRouteMessage =
@@ -286,7 +286,7 @@ class RouteWidget extends StatelessWidget {
         builder: builder != null
             ? (route) {
                 final r =
-                    RouterObjects.injectedNavigator?.routeData ?? _routeData;
+                    RouterObjects.navigationBuilder?.routeData ?? _routeData;
                 return SubRoute._(
                   key: ValueKey(r._subLocation),
                   child: builder!(route),

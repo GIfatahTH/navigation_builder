@@ -111,7 +111,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       }
 
       _pageSettingsList[i] = settings;
-      final Page<dynamic> p = RouterObjects.injectedNavigator?.pageBuilder ==
+      final Page<dynamic> p = RouterObjects.navigationBuilder?.pageBuilder ==
               null
           ? MaterialPageImp(
               child: settings.child!,
@@ -127,7 +127,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
                   routeWidgetTransitionDuration ?? transitionDuration,
             )
           : //A custom pageBuilder is defined
-          RouterObjects.injectedNavigator!.pageBuilder!(
+          RouterObjects.navigationBuilder!.pageBuilder!(
               MaterialPageArgument(
                 child: settings.child!,
                 key: settings.key,
@@ -172,7 +172,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     if (_pages.isNotEmpty) {
       ResolvePathRouteUtil.globalBaseUrl =
           _pageSettingsList.last.rData!.baseLocation;
-      RouterObjects.injectedNavigator!.routeData =
+      RouterObjects.navigationBuilder!.routeData =
           _pageSettingsList.last.rData!.copyWith(navigationKey: _navigatorKey);
     }
 
@@ -294,7 +294,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       final c = _lastLeafConfiguration;
       if (c != null) {
         // TODO check me
-        // RouterObjects.injectedNavigator!.notify();
+        // RouterObjects.NavigationBuilder!.notify();
       }
       return c;
     }
@@ -328,7 +328,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       redirectedFrom: redirectedFrom,
       ignoreUnknownRoutes: RouterObjects.rootDelegate!._pageSettingsList.isEmpty
           ? false
-          : RouterObjects.injectedNavigator!.ignoreUnknownRoutes,
+          : RouterObjects.navigationBuilder!.ignoreUnknownRoutes,
     );
   }
 
@@ -562,7 +562,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       navigatorKey!.currentState!.pop();
       return SynchronousFuture(true);
     }
-    final exitApp = RouterObjects.injectedNavigator!.onBack?.call(null);
+    final exitApp = RouterObjects.navigationBuilder!.onBack?.call(null);
     if (exitApp == true) {
       return super.popRoute();
     }
@@ -620,7 +620,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       final isRemoved = ch._routerDelegate.remove<T>(routeName, result);
       if (isRemoved) {
         // updateRouteStack();
-        // RouterObjects.injectedNavigator!.routeData =
+        // RouterObjects.NavigationBuilder!.routeData =
         //     _lastLeafConfiguration!.rData!;
         return true;
       }
@@ -633,7 +633,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     _completers.remove(routeName)?.complete(result);
     _pageSettingsList.removeAt(index);
     updateRouteStack();
-    RouterObjects.injectedNavigator!.routeData =
+    RouterObjects.navigationBuilder!.routeData =
         _lastLeafConfiguration!.rData!.copyWith(navigationKey: _navigatorKey);
     return true;
   }
@@ -642,7 +642,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     if (_canPop) {
       if (!forceBack) {
         final routeDate = _pageSettingsList.last.rData!;
-        bool? canBack = (RouterObjects.injectedNavigator!.onBack
+        bool? canBack = (RouterObjects.navigationBuilder!.onBack
                     ?.call(routeDate) ??
                 true) &&
             (RouterObjects._canNavigateBackScoped[routeDate.location]?.call() ??
@@ -655,7 +655,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       _completers.remove(_pageSettingsList.last.name!)?.complete(result);
       _pageSettingsList.removeLast();
       updateRouteStack();
-      RouterObjects.injectedNavigator!.routeData =
+      RouterObjects.navigationBuilder!.routeData =
           _lastLeafConfiguration!.rData!;
       return true;
     } else {
@@ -992,7 +992,7 @@ class _RootRouterWidgetState extends State<_RootRouterWidget> {
   void dispose() {
     super.dispose();
     widget.dispose();
-    RouterObjects.injectedNavigator?.dispose();
+    RouterObjects.navigationBuilder?.dispose();
   }
 
   @override

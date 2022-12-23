@@ -244,9 +244,9 @@ class _ResolveLocation {
       required RouteData routeData,
     }) {
       final matched = <String, RouteSettingsWithChildAndData>{};
-      RouterObjects.injectedNavigator?.routeData = routeData;
+      RouterObjects.navigationBuilder?.routeData = routeData;
       if (page is! Redirect && path is! RouteWidget) {
-        page = RouterObjects.injectedNavigator?.redirectTo?.call(routeData) ??
+        page = RouterObjects.navigationBuilder?.redirectTo?.call(routeData) ??
             page;
       }
       if (page is Redirect) {
@@ -330,6 +330,25 @@ class _ResolveLocation {
     return m;
   }
 
+  Widget? resolveRoute(
+    Map<Uri, Widget Function(RouteData)> routes,
+    Uri route,
+    RouteData routeData,
+  ) {
+    if (RouterObjects.navigationBuilder?._mock != null) {
+      try {
+        final page = routes[route]!(routeData);
+        if (page is! Redirect) {
+          return Text(route.path);
+        }
+        return page;
+      } catch (e) {
+        return Text(routeData.location);
+      }
+    }
+    return routes[route]!(routeData);
+  }
+
   Map<RouteData, Widget> getLocation({
     required String toLocation,
     required Map<Uri, Widget Function(RouteData)> routes,
@@ -370,7 +389,8 @@ class _ResolveLocation {
 
         if (route.pathSegments.isEmpty && pathUrl.pathSegments.isNotEmpty) {
           if (skipHomeSlash && routes.length > 1) {
-            Widget? page = routes[route]!(routeData);
+            Widget? page = resolveRoute(routes, route, routeData);
+
             if (page is! RouteWidget) {
               continue;
             }
@@ -418,20 +438,20 @@ class _ResolveLocation {
         queryParams: queryParams,
       );
 
-      Widget? page = routes[route]!(routeData);
+      Widget? page = resolveRoute(routes, route, routeData);
       if (route.path != '/') {
         if (routeData._pathEndsWithSlash && remainingUrlSegments.isEmpty) {
           if (page is! RouteWidget) {
             routeData = routeData.copyWith(pathEndsWithSlash: false);
-            page = routes[route]!(routeData);
+            page = resolveRoute(routes, route, routeData);
           } else if (!page._routeKeys.contains('/')) {
             routeData = routeData.copyWith(pathEndsWithSlash: false);
-            page = routes[route]!(routeData);
+            page = resolveRoute(routes, route, routeData);
           }
         }
       }
 
-      pages[routeData] = page;
+      pages[routeData] = page!;
     });
 
     if (pages.values.last is! RouteWidget &&

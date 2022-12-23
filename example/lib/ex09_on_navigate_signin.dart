@@ -3,7 +3,7 @@ import 'package:navigation_builder/navigation_builder.dart';
 import 'package:states_rebuilder/scr/development_booster/development_booster.dart';
 import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
-// Example of navigation guard that used the API `InjectedNavigator.onNavigate`
+// Example of navigation guard that used the API `NavigationBuilder.onNavigate`
 // to achive redirection when auth status is invaild.
 
 void main() {

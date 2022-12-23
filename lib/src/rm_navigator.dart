@@ -5,7 +5,7 @@ final navigateObject = _Navigate();
 class _Navigate {
   ///get the NavigatorState
   NavigatorState get navigatorState {
-    // final key = RouterObjects.injectedNavigator!.routeData.navigatorKey;
+    // final key = RouterObjects.NavigationBuilder!.routeData.navigatorKey;
 
     // return key!.currentState!;
     final navigatorState = _navigatorKey.currentState;

@@ -77,7 +77,7 @@ class RouteInformationParserImp extends RouteInformationParser<PageSettings> {
       if ((!_routerDelegate.canLogMessage ||
               _routerDelegate.message == 'Back') &&
           _restoredRouteInformationName != configuration.name) {
-        if (RouterObjects.injectedNavigator!.debugPrintWhenRouted) {
+        if (RouterObjects.navigationBuilder!.debugPrintWhenRouted) {
           NavigationBuilderLogger.log('${_routerDelegate.message} to: $name');
         }
         _routerDelegate.message = 'Navigate';
