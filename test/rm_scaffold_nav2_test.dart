@@ -116,7 +116,7 @@ void main() {
         hideCurrentSnackBar: false);
     await tester.pumpAndSettle();
     expect(find.text('showSnackBar'), findsOneWidget);
-    _navigator.scaffold.removeCurrentSnackBarm();
+    _navigator.scaffold.removeCurrentSnackBar();
     await tester.pump();
     expect(find.text('showSnackBar'), findsNothing);
   });

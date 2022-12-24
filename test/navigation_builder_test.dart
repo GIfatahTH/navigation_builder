@@ -87,14 +87,17 @@ class _TopWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationProvider: _provider,
-      routeInformationParser: _provider != null
-          ? informationParser = _RouteInformationParserTest(
-              _navigator.routerDelegate as RouterDelegateImp,
-            )
-          : _navigator.routeInformationParser,
-      routerDelegate: _navigator.routerDelegate,
-      backButtonDispatcher: dispatcher,
+      routerConfig: RouterConfig(
+        routeInformationProvider:
+            _provider ?? _navigator.routerConfig.routeInformationProvider,
+        routeInformationParser: _provider != null
+            ? informationParser = _RouteInformationParserTest(
+                _navigator.routerConfig.routerDelegate as RouterDelegateImp,
+              )
+            : _navigator.routerConfig.routeInformationParser,
+        routerDelegate: _navigator.routerConfig.routerDelegate,
+        backButtonDispatcher: dispatcher,
+      ),
     );
   }
 }
@@ -1826,8 +1829,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -1931,8 +1933,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -2133,8 +2134,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -2250,8 +2250,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -4926,8 +4925,7 @@ void main() {
       );
 
       MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
 
       navigator.to('/page1');
@@ -5045,8 +5043,7 @@ void main() {
       );
 
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5106,8 +5103,7 @@ void main() {
       );
 
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5167,8 +5163,7 @@ void main() {
       );
 
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('Page111'), findsOneWidget);
@@ -5221,8 +5216,7 @@ void main() {
       );
 
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5412,8 +5406,7 @@ void main() {
       );
 
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5444,8 +5437,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5471,8 +5463,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       bool shouldThrow = true;
       await tester.pumpWidget(
@@ -5533,8 +5524,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5602,8 +5592,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -5802,8 +5791,7 @@ void main() {
         },
       );
       final widget = MaterialApp.router(
-        routeInformationParser: navigator.routeInformationParser,
-        routerDelegate: navigator.routerDelegate,
+        routerConfig: navigator.routerConfig,
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);

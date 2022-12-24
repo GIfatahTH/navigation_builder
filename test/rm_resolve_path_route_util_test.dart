@@ -1784,8 +1784,7 @@ class _TopWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: _navigator.routeInformationParser,
-      routerDelegate: _navigator.routerDelegate,
+      routerConfig: _navigator.routerConfig,
     );
   }
 }

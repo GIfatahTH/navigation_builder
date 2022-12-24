@@ -110,23 +110,12 @@ abstract class NavigationBuilder {
       navigateObject.pageRouteBuilder = value;
   static final transitions = transitionsObject;
 
+  ///Get an active navigation [BuildContext].
+  BuildContext? get navigationContext => context;
+
   ///Get an active [BuildContext].
   ///
   static BuildContext? get context {
-    // if (_context != null) {
-    //   return _context;
-    // }
-
-    // if (_contextSet.isNotEmpty) {
-    //   final renderObject = _contextSet.last.findRenderObject();
-    //   if (renderObject != null && renderObject.attached != true) {
-    //     _contextSet.removeLast();
-    //     // ignore: recursive_getters
-    //     return context;
-    //   }
-    //   return _contextSet.last;
-    // }
-
     return navigateObject.navigatorState.context;
   }
 
@@ -137,6 +126,7 @@ abstract class NavigationBuilder {
   /// [RouteInformationParser] delegate.
   RouteInformationParser<PageSettings> get routeInformationParser =>
       RouterObjects.routeInformationParser!;
+  RouterConfig<PageSettings> get routerConfig => RouterObjects.routerConfig!;
 
   /// Set the route stack. It exposes the current [PageSettings] stack.
   void setRouteStack(
@@ -173,7 +163,7 @@ abstract class NavigationBuilder {
   /// If the page belongs to a sub route the page is added to it and only this
   /// particular sub route is triggered to animate transition.
   ///
-  /// It is similar to `_navigate.toNamed` method.
+  ///Equivalent to: [NavigatorState.pushNamed]
   Future<T?> to<T extends Object?>(
     String routeName, {
     Object? arguments,
@@ -213,9 +203,12 @@ abstract class NavigationBuilder {
     return r;
   }
 
-  /// Push a pageless route
+  ///navigate to the given page.
   ///
-  /// Similar to `_navigate.to`
+  ///You can specify a name to the route  (e.g., "/settings"). It will be used with
+  ///[backUntil], [toAndRemoveUntil],
+  ///
+  ///Equivalent to: [NavigatorState.push]
   Future<T?> toPageless<T extends Object?>(
     Widget page, {
     String? name,
@@ -300,11 +293,17 @@ abstract class NavigationBuilder {
   /// ```
   /// On app start up, the route stack is `['/']`.
   ///
-  /// If we call `myNavigator.to('/page1/page11/page111')`, the route stack is
+  /// If we call `myNavigator.to('/page1/page11/page111')`,
+  /// the route stack is
+  ///
   /// `['/', '/page1/page11/page111']`.
   ///
+  ///
+  ///
   /// In contrast, if we invoke myNavigator.toDeeply('/page1/page11/page111'),
-  /// the route stack is `['/', '/page1', '/page1/page11', '/page1/page11/page111']`.
+  /// the route stack is
+  ///
+  /// `['/', '/page1', '/page1/page11', '/page1/page11/page111']`.
   void toDeeply(
     String routeName, {
     Object? arguments,
@@ -352,7 +351,7 @@ abstract class NavigationBuilder {
   /// Find the page with given routeName and remove the current route and
   /// replace it with the new one.
   ///
-  /// It is similar to `_navigate.toReplacementNamed` method.
+  ///Equivalent to: [NavigatorState.pushReplacementNamed]
   Future<T?> toReplacement<T extends Object?, TO extends Object?>(
     String routeName, {
     TO? result,
@@ -382,12 +381,14 @@ abstract class NavigationBuilder {
     return r;
   }
 
-  /// Find the page with given routeName and then remove all the previous routes
-  /// until meeting the route with defined route name [untilRouteName].
+  /// Navigate to the page with the given named route (first argument), and then
+  /// remove all the previous routes until meeting the route with defined route
+  /// name [untilRouteName].
+  ///
   /// If no route name is given ([untilRouteName] is null) , all routes will be
   /// removed except the new page route.
   ///
-  /// It is similar to `_navigate.toNamedAndRemoveUntil` method.
+  /// Equivalent to: [NavigatorState.pushNamedAndRemoveUntil]
   Future<T?> toAndRemoveUntil<T extends Object?>(
     String newRouteName, {
     String? untilRouteName,
@@ -419,10 +420,10 @@ abstract class NavigationBuilder {
     return r;
   }
 
-  /// Navigate back and remove all the previous routes until meeting the route
-  /// with defined name
+  ///Navigate back and remove all the previous routes until meeting the route
+  ///with defined name
   ///
-  /// It is similar to `_navigate.backUntil` method.
+  ///Equivalent to: [NavigatorState.popUntil]
   void backUntil(String untilRouteName) {
     if (navigationBuilderMockedInstance != null) {
       navigationBuilderMockedInstance!.backUntil(untilRouteName);
@@ -430,9 +431,12 @@ abstract class NavigationBuilder {
     return navigateObject.backUntil(untilRouteName);
   }
 
-  /// Navigate back to the last page, ie Pop the top-most route off the navigator.
+  /// Navigate back to the last page, ie
+  /// Pop the top-most route off the navigator.
   ///
-  /// It is similar to `_navigate.back` method.
+  /// Equivalent to: [NavigatorState.pop]
+  ///
+  /// See also: [forceBack]
   void back<T extends Object>([T? result]) {
     if (navigationBuilderMockedInstance != null) {
       return navigationBuilderMockedInstance!.back<T>(result);
@@ -440,6 +444,9 @@ abstract class NavigationBuilder {
     return navigateObject.back<T>(result);
   }
 
+  ///Navigate back than to the page with the given named route
+  ///
+  ///Equivalent to: [NavigatorState.popAndPushNamed]
   Future<T?> backAndToNamed<T extends Object?, TO extends Object?>(
     String routeName, {
     TO? result,
@@ -466,8 +473,17 @@ abstract class NavigationBuilder {
     ;
   }
 
-  /// {@macro forceBack}
-  /// It is similar to `_navigate.forceBack` method.
+  ///{@template forceBack}
+  /// Navigate Back by popping the top-most page route with all pagesless route
+  /// associated with it and without calling `onNavigateBack` hook.
+  ///
+  /// For example:
+  /// In case a `Dialog` (a `Dialog` is an example pageless route) is displayed and
+  /// we invoke `forceBack`, the dialog and the last page are popped from route stack.
+  /// Contrast this with the case when we call [back] where only the dialog is popped.
+  /// {@endtemplate}
+  /// See also: [back]
+  ///
   void forceBack<T extends Object>([T? result]) {
     if (navigationBuilderMockedInstance != null) {
       return navigationBuilderMockedInstance!.forceBack<T>(result);
@@ -512,7 +528,23 @@ abstract class NavigationBuilder {
     }());
   }
 
-  /// {@macro toDialog}
+  ///{@template toDialog}
+  ///Displays a Material dialog above the current contents of the app, with
+  ///Material entrance and exit animations, modal barrier color, and modal
+  ///barrier behavior (dialog is dismissible with a tap on the barrier).
+  ///
+  ///* Required parameters:
+  ///  * [dialog]:  (positional parameter) Widget to display.
+  /// * optional parameters:
+  ///  * [barrierDismissible]: Whether dialog is dismissible when tapping
+  /// outside it. Default value is true.
+  ///  * [barrierColor]: the color of the modal barrier that darkens everything
+  /// the dialog. If null the default color Colors.black54 is used.
+  ///  * [useSafeArea]: Whether the dialog should only display in 'safe' areas
+  /// of the screen. Default value is true.
+  ///
+  ///Equivalent to: [showDialog].
+  /// {@endtemplate}
   Future<T?> toDialog<T>(
     Widget dialog, {
     bool barrierDismissible = true,
@@ -538,7 +570,19 @@ abstract class NavigationBuilder {
     );
   }
 
-  /// {@macro toCupertinoDialog}
+  ///{@template toCupertinoDialog}
+  ///Displays an iOS-style dialog above the current contents of the app, with
+  ///iOS-style entrance and exit animations, modal barrier color, and modal
+  ///barrier behavior
+  ///
+  ///* Required parameters:
+  ///  * [dialog]:  (positional parameter) Widget to display.
+  /// * optional parameters:
+  ///  * [barrierDismissible]: Whether dialog is dismissible when tapping
+  /// outside it. Default value is false.
+  ///
+  ///Equivalent to: [showCupertinoDialog].
+  /// {@endtemplate}
   Future<T?> toCupertinoDialog<T>(
     Widget dialog, {
     bool barrierDismissible = false,
@@ -559,7 +603,34 @@ abstract class NavigationBuilder {
     );
   }
 
-  /// {@macro toBottomSheet}
+  ///{@template toBottomSheet}
+  ///Shows a modal material design bottom sheet that prevents the user from
+  ///interacting with the rest of the app.
+  ///
+  ///A closely related widget is the persistent bottom sheet, which allows
+  ///the user to interact with the rest of the app. Persistent bottom sheets
+  ///can be created and displayed with the [NavigationBuilder.showBottomSheet] or
+  ///[showBottomSheet] Methods.
+  ///
+  ///
+  ///* Required parameters:
+  ///  * [bottomSheet]:  (positional parameter) Widget to display.
+  /// * optional parameters:
+  ///  * [isDismissible]: whether the bottom sheet will be dismissed when user
+  /// taps on the scrim. Default value is true.
+  ///  * [enableDrag]: whether the bottom sheet can be dragged up and down and
+  /// dismissed by swiping downwards. Default value is true.
+  ///  * [isScrollControlled]: whether this is a route for a bottom sheet that
+  /// will utilize [DraggableScrollableSheet]. If you wish to have a bottom
+  /// sheet that has a scrollable child such as a [ListView] or a [GridView]
+  /// and have the bottom sheet be draggable, you should set this parameter
+  /// to true.Default value is false.
+  ///  * [backgroundColor], [elevation], [shape], [clipBehavior] and
+  /// [barrierColor]: used to customize the appearance and behavior of modal
+  /// bottom sheets
+  ///
+  ///Equivalent to: [showModalBottomSheet].
+  /// {@endtemplate}
   Future<T?> toBottomSheet<T>(
     Widget bottomSheet, {
     bool isDismissible = true,
@@ -600,7 +671,15 @@ abstract class NavigationBuilder {
     );
   }
 
-  /// {@macro toCupertinoModalPopup}
+  ///{@template toCupertinoModalPopup}
+  ///Shows a modal iOS-style popup that slides up from the bottom of the screen.
+  ///* Required parameters:
+  ///  * [cupertinoModalPopup]:  (positional parameter) Widget to display.
+  /// * optional parameters:
+  ///  * [filter]:
+  ///  * [semanticsDismissible]: whether the semantics of the modal barrier are
+  /// included in the semantics tree
+  /// {@endtemplate}
   Future<T?> toCupertinoModalPopup<T>(
     Widget cupertinoModalPopup, {
     ImageFilter? filter,
@@ -675,6 +754,15 @@ class NavigationBuilderImp extends NavigationBuilder {
     routeInformationParser.parseRouteInformation(RouteInformation(
       location: RouterObjects._initialRouteValue,
     ));
+  }
+
+  @override
+  RouterConfig<PageSettings> get routerConfig {
+    if (!_isInitialized) {
+      _isInitialized = true;
+      _resetDefaultState();
+    }
+    return super.routerConfig;
   }
 
   @override
