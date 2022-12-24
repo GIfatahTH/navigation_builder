@@ -40,6 +40,24 @@ class MyHomePageViewModel {
     );
   }
 
+  void showDialogUsingNavigationBuilderBuildContext() {
+    showDialog(
+        context: navigator.navigationContext!,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text('Are you sure?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(navigator.navigationContext!).pop();
+                },
+                child: const Text('NO'),
+              ),
+            ],
+          );
+        });
+  }
+
   void showBottomSheet() {
     navigator.toBottomSheet(
       ColoredBox(
@@ -47,11 +65,17 @@ class MyHomePageViewModel {
         child: SizedBox(
           height: 150,
           width: double.infinity,
-          child: TextButton(
-            onPressed: () {
-              navigator.back();
-            },
-            child: const Text('OK'),
+          child: Column(
+            children: [
+              const Text('This is a Bottom Sheet'),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () {
+                  navigator.back();
+                },
+                child: const Text('CLOSE'),
+              ),
+            ],
           ),
         ),
       ),
@@ -78,14 +102,22 @@ class MyHomePageViewModel {
     navigator.toCupertinoModalPopup(
       ColoredBox(
         color: Colors.amber,
-        child: SizedBox(
-          height: 150,
-          width: double.infinity,
-          child: TextButton(
-            onPressed: () {
-              navigator.back();
-            },
-            child: const Text('OK'),
+        child: Material(
+          child: SizedBox(
+            height: 150,
+            width: double.infinity,
+            child: Column(
+              children: [
+                const Text('This is Cupertino Modal Popup'),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () {
+                    navigator.back();
+                  },
+                  child: const Text('CLOSE'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -110,11 +142,17 @@ class MyHomePageViewModel {
             child: SizedBox(
               height: 150,
               width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  navigator.back();
-                },
-                child: const Text('OK'),
+              child: Column(
+                children: [
+                  const Text('This is persistent bottom sheet'),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      navigator.back();
+                    },
+                    child: const Text('CLOSE'),
+                  ),
+                ],
               ),
             ),
           );
@@ -131,6 +169,18 @@ class MyHomePageViewModel {
     navigator.scaffold.openEndDrawer();
   }
 
+  void showSnackBar() {
+    navigator.scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('HI'),
+        action: SnackBarAction(
+          label: 'HIDE',
+          onPressed: () => navigator.scaffold.hideCurrentSnackBar(),
+        ),
+      ),
+    );
+  }
+
   void showMaterialBanner() {
     navigator.scaffold.showMaterialBanner(
       MaterialBanner(
@@ -139,7 +189,7 @@ class MyHomePageViewModel {
         actions: [
           TextButton(
             onPressed: () => navigator.scaffold.removeCurrentMaterialBanner(),
-            child: Text('Close'),
+            child: const Text('CLOSE'),
           ),
         ],
       ),
@@ -161,54 +211,69 @@ class MyHomePage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              ElevatedButton(
-                onPressed:
-                    myHomePageViewModel.showDialogWithoutTheNeedOfBuildContext,
-                child: const Text('Show Dialog'),
+              const Text('Dialogs and bottom sheets'),
+              const SizedBox(height: 8),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel
+                        .showDialogWithoutTheNeedOfBuildContext,
+                    child: const Text('Show Dialog'),
+                  ),
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel
+                        .showDialogUsingNavigationBuilderBuildContext,
+                    child: const Text('Show Dialog using BuildContext'),
+                  ),
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel.showCupertionDialog,
+                    child: const Text('Show Cupertino dialog'),
+                  ),
+                  ElevatedButton(
+                    onPressed:
+                        myHomePageViewModel.showAboutDialogWithoutBuildContext,
+                    child: const Text('Show About dialog'),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: myHomePageViewModel.showBottomSheet,
-                child: const Text('Show Bottom sheet'),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel.showBottomSheet,
+                    child: const Text('Show Bottom sheet'),
+                  ),
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel.showCupertinoModalPopup,
+                    child: const Text('Show Cupertino Modal Popup'),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: myHomePageViewModel.showCupertionDialog,
-                child: const Text('Show Cupertino dialog'),
-              ),
+              const Text('Scaffold related popups'),
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: myHomePageViewModel.showCupertinoModalPopup,
-                child: const Text('Show Cupertino Modal Popup'),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed:
-                    myHomePageViewModel.showAboutDialogWithoutBuildContext,
-                child: const Text('Show About dialog'),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {
-                  navigator.scaffold.showSnackBar(
-                    SnackBar(
-                      content: const Text('HI'),
-                      action: SnackBarAction(
-                        label: 'Hide',
-                        onPressed: () =>
-                            navigator.scaffold.hideCurrentSnackBar(),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Show  SnackBar'),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {
-                  myHomePageViewModel.showMaterialBanner();
-                },
-                child: const Text('Show  Material banner'),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton(
+                    onPressed: myHomePageViewModel.showSnackBar,
+                    child: const Text('Show  SnackBar'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      myHomePageViewModel.showMaterialBanner();
+                    },
+                    child: const Text('Show  Material banner'),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Builder(
@@ -218,33 +283,39 @@ class MyHomePage extends StatelessWidget {
                       navigator.scaffold.context = context;
                       myHomePageViewModel.showPersistentBottomSheet();
                     },
-                    child: const Text('Show  bottom sheet'),
+                    child: const Text('Show persistent bottom sheet'),
                   );
                 },
               ),
               const SizedBox(height: 8),
-              Builder(
-                builder: (context) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      navigator.scaffold.context = context;
-                      myHomePageViewModel.openDrawer();
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  Builder(
+                    builder: (context) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          navigator.scaffold.context = context;
+                          myHomePageViewModel.openDrawer();
+                        },
+                        child: const Text('Open Drawer'),
+                      );
                     },
-                    child: const Text('Open Drawer'),
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              Builder(
-                builder: (context) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      navigator.scaffold.context = context;
-                      myHomePageViewModel.openEndDrawer();
+                  ),
+                  Builder(
+                    builder: (context) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          navigator.scaffold.context = context;
+                          myHomePageViewModel.openEndDrawer();
+                        },
+                        child: const Text('Open EndDrawer'),
+                      );
                     },
-                    child: const Text('Open EndDrawer'),
-                  );
-                },
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
             ],
@@ -252,15 +323,35 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: TextButton(
-          onPressed: () => navigator.back(),
-          child: const Text('Close Drawer'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => navigator.scaffold.closeDrawer(),
+              child: const Text('Close Drawer using scaffold.closeDrawer'),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => navigator.back(),
+              child: const Text('Close Drawer using back'),
+            ),
+          ],
         ),
       ),
       endDrawer: Drawer(
-        child: TextButton(
-          onPressed: () => navigator.back(),
-          child: const Text('Close EndDrawer'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => navigator.scaffold.closeDrawer(),
+              child: const Text('Close end Drawer using scaffold.closeDrawer'),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => navigator.back(),
+              child: const Text('Close end Drawer using back'),
+            ),
+          ],
         ),
       ),
     );

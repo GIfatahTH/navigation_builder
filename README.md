@@ -1,13 +1,13 @@
 
 <h1> navigation_builder </h1>
 
-This package was original a part of `states_rebuilder` package. As requested by many users, I extract it to its own independent package.
+This package was original a part of `navigation_builder` package. As requested by many users, I extract it to its own independent package.
 
-Coming from 'states_rebuilder', all you need to do is to:
-* use `NavigationBuilder.create` instead of `RM.injectNavigator`
+Coming from 'navigation_builder', all you need to do is to:
+* use `NavigationBuilder.create` instead of `NavigationBuilder.create`
 
 
-## Setting Navigator
+# Setting Navigator (The global Picutre)
 To set navigator 2 you only need to define a global `NavigationBuilder` final variable and use `MaterialApp.router` or `CupertinoApp.router` widgets like this:
 
 ```dart
@@ -16,6 +16,12 @@ final myNavigator = NavigationBuilder.create(
   routes: {
     ... 
   },
+  onNavigate: (RouteData data) {
+    // Optional 
+  },
+  onNavigateBack: (RouteData data) {
+    // Optional   
+  }
 );
 
 class MyApp extends StatelessWidget {
@@ -23,26 +29,36 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: navigator.routerConfig,
+      routerConfig: myNavigator.routerConfig,
     );
   }
 }
 ```
 
-To navigate imperatively: (Imperative in the look but declarative in behind the scene)
+* To navigate imperatively: (Imperative in the look but declarative in behind the scene)
 
   ```dart
   myNavigator.to('/page1');
+  myNavigator.to('/page1', arguments: 'myArgument', queryParams: {'id':'1'});
+  myNavigator.toReplacement('/page1');
+  myNavigator.toAndRemoveUntil('/page2', untilRouteName: '/page1');
   myNavigator.toDeeply('/page1');
-  myNavigator.toReplacement('/page1', argument: 'myArgument');
-  myNavigator.toAndRemoveUntil('/page1', queryParam: {'id':'1'});
+
+  myNavigator.routeData; // Get information of the current route
+  myNavigator.canPop;
+  myNavigator.pageStack; // get the route stack
+
   myNavigator.back();
+  myNavigator.forceBack();
+  myNavigator.backAndToNamed('/page1');
   myNavigator.backUntil('/page1');
   ```
 
-To navigate declaratively:
+* To navigate declaratively:
 
   ```dart
+  myNavigator.onNavigate();
+  myNavigator.removePage('/page1');
   myNavigator.setRouteStack(
     (pages){
       // exposes a copy of the current route stack
@@ -51,28 +67,52 @@ To navigate declaratively:
   )
   ```
 
-To navigate to pageless routes, show dialogs and snackBars without `BuildContext`:
+* To navigate to pageless routes, show dialogs and snackBars without `BuildContext`:
 
   ```dart
-  myNavigator.toPageless(HomePage());
-  RM.navigate.toDialog(AlertDialog( ... ));
-  RM.scaffoldShow.snackbar(SnackBar( ... ));
+  myNavigator.toPageless(MyPageWidget());
   ```
 
-`InjectedNavigator` is a reactive model so you can listen to it using `ReactiveStatelessWidget`:
+* TO show dialogs and bottomSheets: 
 
   ```dart
-  @override
-  Widget build(BuildContext context) {
-    return OnReactive(
-      () => Text('${context.routeData.location}'),
-    );
-  }
+  myNavigator.toDialog(Dialog());
+  myNavigator.toCupertinoDialog(CupertinoAlertDialog());
+  myNavigator.toBottomSheet(MyWidget());
+  myNavigator.toCupertinoModalPopup(MyWidget());
   ```
 
-  > You can easily change page transition animation, using one of the predefined TransitionBuilder or just define yours.
+* TO show Scaffold related popups: 
 
-# Table of Contents <!-- omit in toc --> 
+  ```dart
+  myNavigator.scaffold.showSnackBar(SnackBar());
+  myNavigator.scaffold.hideCurrentSnackBar();
+  myNavigator.scaffold.removeCurrentSnackBar();
+
+  myNavigator.scaffold.openDrawer();
+  myNavigator.scaffold.closeDrawer();
+  myNavigator.scaffold.openEndDrawer();
+  myNavigator.scaffold.closeEndDrawer();
+
+  myNavigator.scaffold.showMaterialBanner(MaterialBanner());
+  myNavigator.scaffold.hideCurrentMaterialBanner();
+  myNavigator.scaffold.removeCurrentMaterialBanner();
+
+  myNavigator.scaffold.showBottomSheet(MyWidget());
+  ```
+
+* TO Mock the NavigationBuilder for test: 
+
+  ```dart
+    myNavigator.injectMock(mock);
+  ```
+
+
+> For more simple and practical examples of navigation, please refer to the navigation's set of [examples](https://github.com/GIfatahTH/navigation_builder/blob/dev/example)
+
+
+# Table of Contents 
+## Table of Contents <!-- omit in toc --> 
 - [**NavigationBuilder**](#navigationBuilder)  
   - [routes](#routes)  
   - [initialLocation](#initiallocation)  
@@ -107,10 +147,10 @@ To navigate to pageless routes, show dialogs and snackBars without `BuildContext
 
 ## NavigationBuilder
 ### routes
-The first step to set Navigator 2 API is to define how route names are mapped to their corresponding pages using `RM.injectNavigator` method:
+The first step to set Navigator 2 API is to define how route names are mapped to their corresponding pages using `NavigationBuilder.create` method:
 
 ```dart
-  final NavigationBuilder myNavigator = RM.injectNavigator(
+  final NavigationBuilder myNavigator = NavigationBuilder.create(
      // Define your routes map
      routes: {
        '/': (RouteData data) => Home(),
@@ -298,7 +338,7 @@ The map entries of the `routes` parameter can be:
     * For custom page transition animation:
         You can dedicate a particular page transition to a specified route.
         ```dart
-        final myNavigator = RM.injectNavigator(
+        final myNavigator = NavigationBuilder.create(
           // Default transition
           transitionDuration: RM.transitions.leftToRight(),
           routes: {
@@ -361,9 +401,17 @@ To navigate to pageless routes, show dialogs and snackBars without `BuildContext
 
   ```dart
   myNavigator.toPageless(HomePage());
-  RM.navigate.to(HomePage());
-  RM.navigate.toDialog(AlertDialog( ... ));
-  RM.scaffoldShow.snackbar(SnackBar( ... ));
+  myNavigator.to(HomePage());
+
+  myNavigator.toDialog(AlertDialog( ... ));
+  myNavigator.back();// TO close the dialog
+
+
+  // set the BuildContext that will be used to find the scaffold.
+  myNavigator.scaffold.context= context; 
+  myNavigator.scaffold.snackbar(SnackBar( ... ));
+  myNavigator.scaffold.showDrawer();
+  myNavigator.scaffold.closeDrawer();
   ```
 For more information on navigation see [**Navigation**](#navigation)
 
@@ -392,7 +440,7 @@ You can set your custom 404 widget using the parameter `unknownRoute`. It expose
 
 As deep link can have data out of boundary, you can check for the validity of the extracted data and dispay the `unknownRoute` if data is not valid.
 ```dart
-  final NavigationBuilder myNavigator = RM.injectNavigator(
+  final NavigationBuilder myNavigator = NavigationBuilder.create(
      routes: {
         '/': (RouteData data) => Home(),
         '/page1/bookId': (RouteData data) {
@@ -413,7 +461,7 @@ As deep link can have data out of boundary, you can check for the validity of th
 You can set the parameter `ignoreUnknownRoutes` to true to ignore all unknown routes and the app stays in the last known route.
 
 ```dart
-  final NavigationBuilder myNavigator = RM.injectNavigator(
+  final NavigationBuilder myNavigator = NavigationBuilder.create(
     ignoreUnknownRoutes: true,
      routes: {
         '/': (RouteData data) => Home(),
@@ -426,7 +474,7 @@ The builder parameters is used to wrap the router outlet widget with other widge
 
 In the following example the entire app is wrapped with a `Scaffold` that has an `AppBar` where the title displays the current location the app is in.
 ```dart
- final myNavigator = RM.injectNavigator(
+ final myNavigator = NavigationBuilder.create(
    builder: (Widget routeOutlet) {
       // If you extract this Scaffold to a Widget class, you do not
       // need to use the Builder widget
@@ -492,7 +540,7 @@ By default, depending on the target platform, Flutter choses the adequate page t
 You can provide you own page transition to override the default transition for all routes using `transitionsBuilder`
 
 ```dart
- final myNavigator = RM.injectNavigator(
+ final myNavigator = NavigationBuilder.create(
    transitionsBuilder: (context, animation, secondaryAnimation, child) {
      return // Your page transition implementation
    },
@@ -505,7 +553,7 @@ You can provide you own page transition to override the default transition for a
 You can also use one of the predefined transitions using `RM.transitions`
 
 ```dart
- final myNavigator = RM.injectNavigator(
+ final myNavigator = NavigationBuilder.create(
    transitionsBuilder: RM.transitions.leftToRight(),
    routes: {
      ... 
@@ -516,7 +564,7 @@ You can also use one of the predefined transitions using `RM.transitions`
 You can also force pages to transit without animation using `RM.transitions.none()`
 
 ```dart
- final myNavigator = RM.injectNavigator(
+ final myNavigator = NavigationBuilder.create(
    transitionsBuilder: RM.transitions.none(),
    routes: {
      ... 
@@ -536,7 +584,7 @@ It exposes the current state of the `NavigationBuilder` (`RouteData`).
 
 Let's take this example:
 ```dart
-  final myNavigator = RM.injectNavigator(
+  final myNavigator = NavigationBuilder.create(
     onNavigate: (RouteData data) {
       final toLocation = data.location;
       if (toLocation == '/homePage' && userIsNotSigned) {
@@ -563,14 +611,14 @@ Also if the app is navigating to `'/signInPage'` and if the user is already sign
 You can check for any property the `RouteData` exposes.
 Head to [**Redirection**](#redirection)  section for more information.
 
-See `onNavigate` en action following this [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex08_on_navigate_redirection_from.dart).
+See `onNavigate` en action following this [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex08_on_navigate_redirection_from.dart).
 
 ### onNavigateBack
 This callback is fired every time a route is removed and the app navigate back.
 It can be used to prevent leaving a page unless data is validated.
 
  ```dart
-  final myNavigator = RM.injectNavigator(
+  final myNavigator = NavigationBuilder.create(
     onNavigateBack: (RouteData data) {
       if(data == null){
         // onNavigateBack is called with null data when the hard back button of Android 
@@ -586,16 +634,16 @@ It can be used to prevent leaving a page unless data is validated.
       }
       final backFrom = data.location;
       if (backFrom == '/SingInFormPage' && formIsNotSaved) {
-        RM.navigate.toDialog(
+        myNavigator.toDialog(
           AlertDialog(
             content: Text('The form is not saved yet! Do you want to exit?'),
             actions: [
               ElevatedButton(
-                onPressed: () => RM.navigate.forceBack(),
+                onPressed: () => myNavigator.forceBack(),
                 child: Text('Yes'),
               ),
               ElevatedButton(
-                onPressed: () => RM.navigate.back(),
+                onPressed: () => myNavigator.back(),
                 child: Text('No'),
               ),
             ],
@@ -616,14 +664,14 @@ Here if the app is navigating back from sign in form page and if the form is not
 
 If the user chooses No, the app stays in the sign form page. In contrast if the user choose YES, the app is forcefully popped and both the `Dialog` and the sign in form page are removed from the routing stack.
 
-Here is a working [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex10_on_back_navigation.dart) using `onNavigateBack`.
+Here is a working [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex10_on_back_navigation.dart) using `onNavigateBack`.
 
 ### debugPrintWhenRouted
 If set to true, a message is printed in the console informing us about the state of the navigation.
 
 
 
-This is the full `RM.injectedNavigator` API
+This is the full `NavigationBuilder.create` API
 ```dart
 NavigationBuilder injectNavigator({
   required Map<String, Widget Function(RouteData)> routes,
@@ -648,7 +696,7 @@ To navigate imperatively, we use one of the methods defined in our `NavigationBu
 
 * `myNavigator.to('/page1')`:  
 Here '`/page1'` route will be added on top of the route stack.
-  If you are used to Navigator 1 API, `myNavigator.to('/page1')` is exactly equivalent to `RM.navigate.toNamed('/page1')`. You still can use both with Navigator 2.
+  If you are used to Navigator 1 API, `myNavigator.to('/page1')` is exactly equivalent to `myNavigator.toNamed('/page1')`. You still can use both with Navigator 2.
   ```dart
   Future<T?> to<T extends Object?>(
     String routeName, {
@@ -671,12 +719,12 @@ Here '`/page1'` route will be added on top of the route stack.
       }
   ```
 
-  This is a working [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex02_imperative_navigation.dart).
+  This is a working [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex02_imperative_navigation.dart).
 
 * `myNavigator.toDeeply('/page1/page11')`: Deeply navigate to the given routeName. Deep navigation means that the root stack is cleaned and pages corresponding to sub paths are added to the stack.
   Suppose our navigator is :
   ```dart
-   final myNavigator = RM.injectNavigator(
+   final myNavigator = NavigationBuilder.create(
      routes: {
        '/': (RouteData data) => HomePage(),
        '/page1': (RouteData data) => Page1(),
@@ -689,10 +737,10 @@ Here '`/page1'` route will be added on top of the route stack.
   If we call `myNavigator.to('/page1/page11/page111')`, the route stack is `['/', '/page1/page11/page111']`.
   In contrast, if we invoke `myNavigator.toDeeply('/page1/page11/page111')`, the route stack is `['/', '/page1', '/page1/page11', '/page1/page11/page111']`.
 
-  This is a working [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex04_to_deeply_1.dart).
+  This is a working [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex04_to_deeply_1.dart).
 
 * `myNavigator.toReplacement('/page1')`:  Here '`/page1'` route will be added on top of the route stack and the last page will be removed.
-  This is exactly equivalent to `RM.navigate.toReplacementNamed('/page1')`. You still can use both with Navigator 2.
+  This is exactly equivalent to `myNavigator.toReplacementNamed('/page1')`. You still can use both with Navigator 2.
   ```dart
   Future<T?> toReplacement<T extends Object?, TO extends Object?>(
     String routeName, {
@@ -706,7 +754,7 @@ Here '`/page1'` route will be added on top of the route stack.
 
 * `myNavigator.toAndRemoveUntil('/page1')`:  Here '`/page1'` route will be added on top of the route stack and all the previous routes until meeting the route with defined route name `untilRouteName` are removed.
   If the argument `untilRouteName` is not defined, all previous pages are removed.
-  This is exactly equivalent to `RM.navigate.toNamedAndRemoveUntil('/page1')`. You still can use both with Navigator 2.
+  This is exactly equivalent to `myNavigator.toNamedAndRemoveUntil('/page1')`. You still can use both with Navigator 2.
   ```dart
   Future<T?> toAndRemoveUntil<T extends Object?>(
     String newRouteName, {
@@ -720,13 +768,13 @@ Here '`/page1'` route will be added on top of the route stack.
     
 * `myNavigator.back()`:  Pop the top-most route off the route stack.
   You can pass a result to complete the future that had been returned from pushing the popped route.
-  This is exactly equivalent to `RM.navigate.back()`. You still can use both with Navigator 2.
+  This is exactly equivalent to `myNavigator.back()`. You still can use both with Navigator 2.
   ```dart
   void back<T extends Object>([T? result])
   ```
 
 * `myNavigator.forceBack()`:  Pop the top-most route off the route stack with all pageless route associated with it and without calling `onNavigateBack` hook.
-  This is exactly equivalent to `RM.navigate.forceBack()`.
+  This is exactly equivalent to `myNavigator.forceBack()`.
   ```dart
   void forceBack<T extends Object>([T? result])
   ```
@@ -740,24 +788,24 @@ Here '`/page1'` route will be added on top of the route stack.
   final myForm = RM.injectForm();
 
   //
-  final myNavigator = RM.injectNavigator(
+  final myNavigator = NavigationBuilder.create(
     onNavigateBack: (RouteData data) {
       final backFrom = data.location;
 
       // an InjectedForm is dirty when data is modified and not saved yet
       if (backFrom == '/SingInFormPage' && myForm.isDirty) {
-        RM.navigate.toDialog(
+        myNavigator.toDialog(
           AlertDialog(
             content: Text('The form is not saved yet! Do you want to exit?'),
             actions: [
               ElevatedButton(
                 // Pop off hte Dialog and exit the SingInFormPage
-                onPressed: () => RM.navigate.forceBack(),
+                onPressed: () => myNavigator.forceBack(),
                 child: Text('Yes'),
               ),
               ElevatedButton(
                 // Pop off hte Dialog and stay in the SingInFormPage
-                onPressed: () => RM.navigate.back(),
+                onPressed: () => myNavigator.back(),
                 child: Text('No'),
               ),
             ],
@@ -774,10 +822,10 @@ Here '`/page1'` route will be added on top of the route stack.
   );
   ```
 
-  Here is The working [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex09_on_back_navigation.dart).
+  Here is The working [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex09_on_navigate_signin.dart).
 
 * `myNavigator.backUntil('/page1')`:  Navigate back and remove all the previous routes until meeting the route with defined name.
-  This is exactly equivalent to `RM.navigate.backUntil('/page1')`.
+  This is exactly equivalent to `myNavigator.backUntil('/page1')`.
   ```dart
   void backUntil(String untilRouteName)
   ```
@@ -809,7 +857,7 @@ myNavigator.setRouteStack(
 )
 ```
 
-Here is The working [example](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex01_declarative_navigation.dart).
+Here is The working [example](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex01_declarative_navigation.dart).
 
 ### Pageless navigation
 Here is a quote from [Flutter documentation](https://docs.google.com/document/d/1Q0jx0l4-xymph9O6zLaOY4d_f7YFpNWX_eGbzYxr9wY/edit#heading=h.8ekjskfa3zkl):
@@ -819,60 +867,70 @@ Here is a quote from [Flutter documentation](https://docs.google.com/document/d/
 ### Push a Widget route
 ```dart
  myNavigator.toPageless(NextPage()); 
- RM.navigate.to(NextPage()); 
+ myNavigator.to(NextPage()); 
 ```
 You can specify a name to the route  (e.g., "/settings"). It will be used with `backUntil`, `toAndRemoveUntil`, `toAndRemoveUntil`, and `toNamedAndRemoveUntil`.
 ```dart
- RM.navigate.to(NextPage(), name: '/routeName');
+ myNavigator.to(NextPage(), name: '/routeName');
 
  // calling backUntil:
-RM.navigate.backUntil('/routeName'); // Flutter: popUntil
+myNavigator.backUntil('/routeName'); // Flutter: popUntil
 ```
 ### Dialogs and Sheets
-Dialogs when displayed are pushed into the route stack. It is for this reason, in states_rebuilder, dialogs are treated as navigation:
+Dialogs when displayed are pushed into the route stack. It is for this reason, in navigation_builder, dialogs are treated as navigation:
 
 In Flutter to show a dialog:
 ```dart
 showDialog<T>(
-    context: navigatorState.context,
+    context: myNavigator.navigationContext,
     builder: (_) => Dialog(),
 );
 ```
-In states_rebuilder to show a dialog:
+In navigation_builder to show a dialog:
 
 ```dart
-RM.navigate.toDialog(Dialog());
+myNavigator.navigationContext.toDialog(Dialog());
+// To close the dialog
+myNavigator.back();
 ```
-For sure, states_rebuilder is less boilerplate, but it is also more intuitive.
-In states_rebuilder we make it clear that we are navigating to the dialog, so to close a dialog, we just pop it from the route stack.
+For sure, navigation_builder is less boilerplate, but it is also more intuitive.
+In navigation_builder we make it clear that we are navigating to the dialog, so to close a dialog, we just pop it from the route stack.
 
-So states_rebuilder follows the naming convention as in Flutter SDK, with the change from `show` in Flutter to` to` in states_rebuilder.
+So navigation_builder follows the naming convention as in Flutter SDK, with the change from `show` in Flutter to` to` in navigation_builder.
 
 #### Show a material dialog:
 ```dart
- RM.navigate.toDialog(DialogWidget()); // Flutter: showDialog
+ myNavigator.toDialog(DialogWidget()); // Flutter: showDialog
+ // To close the dialog
+myNavigator.back();
 ```
 
 #### Show a cupertino dialog:
 ```dart
- RM.navigate.toCupertinoDialog(CupertinoDialogWidget()); // Flutter: showCupertinoDialog
+ myNavigator.toCupertinoDialog(CupertinoDialogWidget()); // Flutter: showCupertinoDialog
+ // To close the dialog
+myNavigator.back();
 ```
 
 #### Show a Cupertino dialog:
 ```dart
- RM.navigate.toBottomSheet(BottomSheetWidget()); // Flutter: showModalBottomSheet
+ myNavigator.toBottomSheet(BottomSheetWidget()); // Flutter: showModalBottomSheet
+ // To close the bottom sheet
+myNavigator.back();
 ```
 
 #### Show a Cupertino dialog:
 ```dart
- RM.navigate.toCupertinoModalPopup(CupertinoModalPopupWidget()); // Flutter: showCupertinoModalPopup
+ myNavigator.toCupertinoModalPopup(CupertinoModalPopupWidget()); // Flutter: showCupertinoModalPopup
+ // To close the CupertinoModalPopup
+myNavigator.back();
 ```
 
-For all other dialogs, menus, bottom sheets, not mentioned here, you can use is as defined by flutter using `RM.context`:
+For all other dialogs, menus, bottom sheets, not mentioned here, you can use is as defined by flutter using `myNavigator.navigationContext`:
 example:
 ```dart
  showSearch(
-     context: RM.context, 
+     context: myNavigator.navigationContext, 
      delegate: MyDelegate(),
  )
 ```
@@ -880,58 +938,70 @@ example:
 
 Some side effects require a BuildContext of a scaffold child widget.
 
-In state_states_rebuilder to be able to display them outside the widget tree without explicitly specifying the BuildContext, we need to tell states_rebuild which BuildContext to use first.
+With navigation_builder to be able to display them outside the widget tree without explicitly specifying the BuildContext, we need to tell states_rebuild which BuildContext to use first.
 
 This can be done either:
 
 ```dart
     onPressed: () {
-       RM.scaffold.context= context;
-       RM.scaffold.showBottomSheet(...);
+       myNavigator.scaffold.context= context;
+       myNavigator.scaffold.showBottomSheet(...);
     }
 ```
-Or 
 
+To hide or remove a SnackBar:
 ```dart
     onPressed: () {
-      modelRM.setState(
-        (s)=> doSomeThing(),
-        context: context,
-        onData: (_,__) {
-          RM.scaffold.showBottomSheet(...);
-        },
-      ),
+        myNavigator.scaffold.hideCurrentSnackBar();
+        myNavigator.scaffold.removeCurrentSnackBar();
     }
-  }
 ```
-
-If you have one of the states_rebuilder widgets that is a child of the `Scaffold`, you no longer need to specify a `BuildContext`. The `BuildContext` of this widget will be used.
-
-Since `SnackBars`, for example, depend on `ScaffoldState` and aren't pushed to the route stack, we don't treat them as navigation like we did with dialogs.
-
-To distinguish them from Dialogs and to emphasize that they need a Scaffold-related `BuildContext`, we use `RM.scaffold` instead of `RM.navigate`.
 
 ### Show a persistent bottom-sheet:
 ```dart
- RM.scaffold.showBottomSheet(BottomSheetWidget()); // Flutter: Scaffold.of(context).showBottomSheet
+ myNavigator.scaffold.showBottomSheet(BottomSheetWidget()); // Flutter: Scaffold.of(context).showBottomSheet
+```
+
+To close a persistent bottom-sheet :
+```dart
+    onPressed: () {
+        myNavigator.back();
+    }
 ```
 ### Show a snackbar:
 ```dart
- RM.scaffold.showSnackBar(SnackBarWidget()); // Flutter: Scaffold.of(context).showSnackBar
+ myNavigator.scaffold.showSnackBar(SnackBarWidget()); // Flutter: Scaffold.of(context).showSnackBar
 ```
 ### Open a drawer:
 ```dart
- RM.scaffold.openDrawer(); // Flutter: Scaffold.of(context).openDrawer
+ myNavigator.scaffold.openDrawer(); // Flutter: Scaffold.of(context).openDrawer
 ```
-
-### Open a drawer:
+To close a drawer :
 ```dart
- RM.scaffold.openEndDrawer(); // Flutter: Scaffold.of(context).openEndDrawer
+    onPressed: () {
+        myNavigator.scaffold.closeDrawer()
+        // Or just call back
+        myNavigator.back();
+    }
 ```
-For anything, not mentioned here, you can use the scaffoldState exposed by states_rebuilder.
+### Open an end drawer:
+```dart
+ myNavigator.scaffold.openEndDrawer(); // Flutter: Scaffold.of(context).openEndDrawer
+```
 
-## NavigationBuilder reactivity
-The defined NavigationBuilder is of type `ReactiveModel<RouteData>`. So it is reactive and can be listen to using `ReactiveStatelessWidget`, `OnBuilder` widgets.
+To close a drawer :
+```dart
+    onPressed: () {
+        myNavigator.scaffold.closeEndDrawer()
+        // Or just call back
+        myNavigator.back();
+    }
+```
+
+
+For anything, not mentioned here, you can use the scaffoldState exposed by navigation_builder.
+
+Head [Here](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex19_dialogs.dart) to see different level of page transition animation example.
 
 
 ## Page transition animation
@@ -942,7 +1012,7 @@ Page transition can be customized for there levels:
 ## Global level transition
   While defining `NavigationBuilder` object, you can set your custom page transition animation to be used for all route transitions.
   ```dart
-   final myNavigator = RM.injectNavigator(
+   final myNavigator = NavigationBuilder.create(
      transitionsBuilder: (context, animation, secondaryAnimation, child) {
        return // Your page transition implementation
      },
@@ -954,29 +1024,29 @@ Page transition can be customized for there levels:
 
 ## Route level transition
    You can dedicate a particular page transition to a specific route while other routes still use the default page transition.
-    ```dart
-    final myNavigator = RM.injectNavigator(
-      // Default transition
-      transitionDuration: RM.transitions.leftToRight(),
-      routes: {
-        '/': (_) => HomePage(),
-        '/Page1': (_) => RouteWidget(
-              builder: (_) => Page1(),
-              // You can use one of the predefined transitions
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  // Custom transition implementation
-                return ...;
-              },
-            ),
-        '/page2': (_) => Page2(),
-      },
-    );
-    ```
+  ```dart
+      final myNavigator = NavigationBuilder.create(
+        // Default transition
+        transitionDuration: RM.transitions.leftToRight(),
+        routes: {
+          '/': (_) => HomePage(),
+          '/Page1': (_) => RouteWidget(
+                builder: (_) => Page1(),
+                // You can use one of the predefined transitions
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    // Custom transition implementation
+                  return ...;
+                },
+              ),
+          '/page2': (_) => Page2(),
+        },
+      );
+  ```
     Pages `'/'` and `'/page2'` will use the default transition whereas `'/page1'` will use its own defined custom page transition.
 
 ## Navigation call level transition
    You can customize the page transition for a particular navigation call:
-    ```dart
+  ```dart
     myNavigator.to(
       '/page1',
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -984,12 +1054,12 @@ Page transition can be customized for there levels:
         return ...;
       },
     )
-    ```   
+  ```   
     The defined transition here will be used once for this navigation call.Any further call of `myNavigator.to` method will use the default page transition or the route transition in case it is used.
 
 You are free to defined the transition you want using the parameters exposed by `transitionBuilder`.  For example:
 ```dart
-final myNavigator = RM.injectNavigator(
+final myNavigator = NavigationBuilder.create(
   transitionsBuilder: (context, animation, secondaryAnimation, child) {
     return FadeTransition(
       opacity: animation.drive(
@@ -1007,16 +1077,16 @@ final myNavigator = RM.injectNavigator(
 You can also use one of the predefined page transitions:
 
 ```dart
-RM.transitions.bottomToUP();
-RM.transitions.upToBottom();
-RM.transitions.leftToRight();
-RM.transitions.rightToLeft();
-RM.transitions.none(); // Pages are transited instantly without animation
+NavigationBuilder.transitions.bottomToUp();
+NavigationBuilder.transitions.upToBottom();
+NavigationBuilder.transitions.leftToRight();
+NavigationBuilder.transitions.rightToLeft();
+NavigationBuilder.transitions.none(); // Pages are transited instantly without animation
 ```
 
 Other predefined page transitions can be added in the future.
 
-Head [Here](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex11_page_transition1.dart) to see different level of page transition animation example.
+Head [Here](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex11_page_transition1.dart) to see different level of page transition animation example.
 
 ## Customized primary and secondary animation
 
@@ -1024,11 +1094,11 @@ You can get the page animation and secondary animation form any page using `cont
 
 You can use the obtained animations to customize the incoming page animation.
 
-Here is an [**example**](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/12_page_transition2.dart) using this concept inspired form ResoCoder's tutorial, [**Flutter custom staggered page transition animation**]( https://resocoder.com/2020/05/26/flutter-custom-staggered-page-transition-animation-tutorial/).
+Here is an [**example**](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/12_page_transition2.dart) using this concept inspired form ResoCoder's tutorial, [**Flutter custom staggered page transition animation**]( https://resocoder.com/2020/05/26/flutter-custom-staggered-page-transition-animation-tutorial/).
 
 
+<!-- // TODO -->
 ## Nested routes
-
 
 ## Redirection
 Route redirection can be done in two levels, at route level and in global level.
@@ -1037,7 +1107,7 @@ If a route is redirected in both route and global level, the route level takes t
 ### Route level redirection
 
 ```dart
-  final NavigationBuilder myNavigator = RM.injectNavigator(
+  final NavigationBuilder myNavigator = NavigationBuilder.create(
      // Define your routes map
      routes: {
        '/': (RouteData data) => data.redirectTo('/home'),
@@ -1067,7 +1137,7 @@ For example, from the route `/books/:bookId/authors` we are redirected to the `/
 ### Global redirection
 Global redirections are done inside `OnNavigate` callBack.
 ```dart
-  final myNavigator = RM.injectNavigator(
+  final myNavigator = NavigationBuilder.create(
     onNavigate: (RouteData data) {
       final toLocation = data.location;
       if (toLocation != '/signInPage' && userIsNotSigned) {
@@ -1114,13 +1184,13 @@ void signIn(String name, String password) async {
 }
 ```
 
-Here is The full example [**example**](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/09_on_navigate_signin.dart) 
+Here is The full example [**example**](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/09_on_navigate_signin.dart) 
 
 ### Cyclic redirection
 Do not fear cyclic redirection. If it happens the unknownRoute is pushed.
 
 ```dart
-final navigator = RM.injectNavigator(
+final navigator = NavigationBuilder.create(
   routes: {
     '/': (data) => data.redirectTo('/home'),
     '/home': (data) => const HomePage(),
@@ -1143,8 +1213,12 @@ final navigator = RM.injectNavigator(
 );
 ```
 
-Here is the working [**example**](https://github.com/GIfatahTH/states_rebuilder/blob/dev/examples/ex004_00_navigation/lib/ex07_on_navigate_cyclic_redirect.dart) 
+Here is the working [**example**](https://github.com/GIfatahTH/navigation_builder/blob/dev/example/lib/ex07_on_navigate_cyclic_redirect.dart) 
 
+<!-- // TODO -->
 ## `myNavigator.canPop`
+<!-- // TODO -->
 ## `myNavigator.routeData`
+<!-- // TODO -->
+## `myNavigator.injectMock`
 

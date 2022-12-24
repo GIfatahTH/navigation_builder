@@ -182,11 +182,11 @@ No valid BuildContext is defined yet
   /// registered [Scaffold]s.
   ///
   /// Similar to [ScaffoldMessengerState.removeCurrentSnackBar].
-  void removeCurrentSnackBarm({
+  void removeCurrentSnackBar({
     SnackBarClosedReason reason = SnackBarClosedReason.remove,
   }) {
     if (_mock != null) {
-      return _mock!.scaffold.removeCurrentSnackBarm(reason: reason);
+      return _mock!.scaffold.removeCurrentSnackBar(reason: reason);
     }
     scaffoldMessengerState.removeCurrentSnackBar(reason: reason);
   }
