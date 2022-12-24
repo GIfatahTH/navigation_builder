@@ -6,7 +6,7 @@ part of 'navigation_builder.dart';
 ///
 /// For example let's take this routes
 /// ```dart
-///  final myNavigator = RM.injectNavigator(
+///  final myNavigator = NavigationBuilder.create(
 ///    routes: {
 ///      '/': (_) => HomePage(),
 ///      '/Page1': (_) => Page1(),
@@ -19,7 +19,7 @@ part of 'navigation_builder.dart';
 /// The above routes definition can be written like this:
 ///
 /// ```dart
-///  final myNavigator = RM.injectNavigator(
+///  final myNavigator = NavigationBuilder.create(
 ///    routes: {
 ///      '/': (_) => HomePage(),
 ///      '/Page1': (_) => RouteWidget(
@@ -37,7 +37,7 @@ part of 'navigation_builder.dart';
 /// an other widget.
 ///
 /// ```dart
-///  final myNavigator = RM.injectNavigator(
+///  final myNavigator = NavigationBuilder.create(
 ///    routes: {
 ///      '/': (_) => HomePage(),
 ///      '/Page1': (_) => RouteWidget(
@@ -78,7 +78,7 @@ part of 'navigation_builder.dart';
 /// In the following example Page1 will be animated using the custom definition,
 /// whereas all other pages will use the default animation.
 /// ```dart
-///  final myNavigator = RM.injectNavigator(
+///  final myNavigator = NavigationBuilder.create(
 ///    // Default transition
 ///    transitionDuration: RM.transitions.leftToRight(),
 ///    routes: {
@@ -102,7 +102,7 @@ class RouteWidget extends StatelessWidget {
   /// Used to wrap the the router outlet widget inside another widget.
   ///
   /// ```dart
-  ///  final myNavigator = RM.injectNavigator(
+  ///  final myNavigator = NavigationBuilder.create(
   ///    routes: {
   ///      '/': (_) => HomePage(),
   ///      '/Page1': (_) => RouteWidget(
@@ -140,7 +140,7 @@ class RouteWidget extends StatelessWidget {
   /// In the follwing example Page1 will be animated using the custom definition,
   /// whereas all other pages will use the default animation.
   /// ```dart
-  ///  final myNavigator = RM.injectNavigator(
+  ///  final myNavigator = NavigationBuilder.create(
   ///    // Default transition
   ///    transitionDuration: RM.transitions.leftToRight(),
   ///    routes: {
@@ -177,7 +177,7 @@ class RouteWidget extends StatelessWidget {
     this.delegateImplyLeadingToParent,
     // Key? key,
   })  : assert(builder != null || routes.isNotEmpty),
-        assert(InjectedNavigatorImp.ignoreSingleRouteMapAssertion ||
+        assert(NavigationBuilderImp.ignoreSingleRouteMapAssertion ||
             routes.isEmpty ||
             routes.length > 1),
         _parentToSubRouteMessage =
@@ -286,7 +286,7 @@ class RouteWidget extends StatelessWidget {
         builder: builder != null
             ? (route) {
                 final r =
-                    RouterObjects.injectedNavigator?.routeData ?? _routeData;
+                    RouterObjects.navigationBuilder?.routeData ?? _routeData;
                 return SubRoute._(
                   key: ValueKey(r._subLocation),
                   child: builder!(route),

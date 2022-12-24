@@ -5,7 +5,7 @@ final navigateObject = _Navigate();
 class _Navigate {
   ///get the NavigatorState
   NavigatorState get navigatorState {
-    // final key = RouterObjects.injectedNavigator!.routeData.navigatorKey;
+    // final key = RouterObjects.NavigationBuilder!.routeData.navigatorKey;
 
     // return key!.currentState!;
     final navigatorState = _navigatorKey.currentState;
@@ -647,7 +647,7 @@ class _Navigate {
   ///
   ///A closely related widget is the persistent bottom sheet, which allows
   ///the user to interact with the rest of the app. Persistent bottom sheets
-  ///can be created and displayed with the (RM.scaffoldShow.bottomSheet) or
+  ///can be created and displayed with the [NavigationBuilder.showBottomSheet] or
   ///[showBottomSheet] Methods.
   ///
   ///

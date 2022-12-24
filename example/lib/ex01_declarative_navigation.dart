@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
-// This is an example of declarative navigation using InjectedNavigator.setRouteStack
+// This is an example of declarative navigation using NavigationBuilder.setRouteStack
 //
 void main() {
   runApp(const BooksApp());

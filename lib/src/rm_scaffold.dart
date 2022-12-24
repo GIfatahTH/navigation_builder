@@ -3,6 +3,8 @@ part of 'navigation_builder.dart';
 final scaffoldObject = _Scaffold();
 
 class _Scaffold {
+  NavigationBuilder? _mock;
+
   BuildContext? _context;
 
   /// The closest [ScaffoldMessengerState ]
@@ -107,6 +109,18 @@ No valid BuildContext is defined yet
     bool? enableDrag,
     AnimationController? transitionAnimationController,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.showBottomSheet<T>(
+        bottomSheet,
+        backgroundColor: backgroundColor,
+        elevation: elevation,
+        shape: shape,
+        clipBehavior: clipBehavior,
+        constraints: constraints,
+        enableDrag: enableDrag,
+        transitionAnimationController: transitionAnimationController,
+      );
+    }
     final r = scaffoldState.showBottomSheet<T>(
       (_) => bottomSheet,
       backgroundColor: backgroundColor,
@@ -138,6 +152,11 @@ No valid BuildContext is defined yet
     SnackBar snackBar, {
     bool hideCurrentSnackBar = true,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold
+          .showSnackBar(snackBar, hideCurrentSnackBar: hideCurrentSnackBar);
+    }
+
     if (hideCurrentSnackBar) {
       scaffoldMessengerState.hideCurrentSnackBar();
     }
@@ -152,6 +171,10 @@ No valid BuildContext is defined yet
   void hideCurrentSnackBar({
     SnackBarClosedReason reason = SnackBarClosedReason.hide,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.hideCurrentSnackBar(reason: reason);
+    }
+
     scaffoldMessengerState.hideCurrentSnackBar(reason: reason);
   }
 
@@ -162,6 +185,9 @@ No valid BuildContext is defined yet
   void removeCurrentSnackBarm({
     SnackBarClosedReason reason = SnackBarClosedReason.remove,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.removeCurrentSnackBarm(reason: reason);
+    }
     scaffoldMessengerState.removeCurrentSnackBar(reason: reason);
   }
 
@@ -182,6 +208,13 @@ No valid BuildContext is defined yet
     MaterialBanner materialBanner, {
     bool hideCurrentMaterialBanner = true,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.showMaterialBanner(
+        materialBanner,
+        hideCurrentMaterialBanner: hideCurrentMaterialBanner,
+      );
+    }
+
     if (hideCurrentMaterialBanner) {
       scaffoldMessengerState.hideCurrentMaterialBanner();
     }
@@ -196,6 +229,9 @@ No valid BuildContext is defined yet
   void hideCurrentMaterialBanner({
     MaterialBannerClosedReason reason = MaterialBannerClosedReason.hide,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.hideCurrentMaterialBanner(reason: reason);
+    }
     scaffoldMessengerState.hideCurrentMaterialBanner(reason: reason);
   }
 
@@ -206,6 +242,9 @@ No valid BuildContext is defined yet
   void removeCurrentMaterialBanner({
     MaterialBannerClosedReason reason = MaterialBannerClosedReason.hide,
   }) {
+    if (_mock != null) {
+      return _mock!.scaffold.removeCurrentMaterialBanner(reason: reason);
+    }
     scaffoldMessengerState.removeCurrentMaterialBanner(reason: reason);
   }
 
@@ -228,7 +267,22 @@ No valid BuildContext is defined yet
   ///   }
   ///  ```
   void openDrawer<T>() {
+    if (_mock != null) {
+      return _mock!.scaffold.openDrawer();
+    }
     scaffoldState.openDrawer();
+    _context = null;
+  }
+
+  /// Close the Drawer if it is opened.
+  ///
+  /// You can close the drawer by just calling [NavigationBuilder.back]
+  void closeDrawer<T>() {
+    if (_mock != null) {
+      return _mock!.scaffold.closeDrawer();
+    }
+    RouterObjects.navigationBuilder?.back();
+
     _context = null;
   }
 
@@ -251,7 +305,21 @@ No valid BuildContext is defined yet
   ///  ```
 
   void openEndDrawer<T>() {
+    if (_mock != null) {
+      return _mock!.scaffold.openEndDrawer();
+    }
     scaffoldState.openEndDrawer();
+    _context = null;
+  }
+
+  /// Close the EndDrawer if it is opened.
+  ///
+  /// You can close the EndDrawer by just calling [NavigationBuilder.back]
+  void closeEndDrawer<T>() {
+    if (_mock != null) {
+      return _mock!.scaffold.closeEndDrawer();
+    }
+    scaffoldState.closeEndDrawer();
     _context = null;
   }
 
