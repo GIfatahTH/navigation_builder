@@ -335,7 +335,8 @@ class _ResolveLocation {
     Uri route,
     RouteData routeData,
   ) {
-    if (RouterObjects.navigationBuilder?._mock != null) {
+    if (RouterObjects.navigationBuilder?.navigationBuilderMockedInstance !=
+        null) {
       try {
         final page = routes[route]!(routeData);
         if (page is! Redirect) {

@@ -1,4 +1,4 @@
-///States_Rebuilder logger
+///Navigation_builder logger
 class NavigationBuilderLogger {
   ///Set to true to avoid printing in test mode
   static bool isTestMode = false;
@@ -9,7 +9,7 @@ class NavigationBuilderLogger {
   ///Console log the error
   static void log(String m, [dynamic e, StackTrace? s]) {
     final suffix = e == null ? 'INFO' : 'ERROR';
-    message = message = '[states_rebuilder::$suffix]: $m';
+    message = message = '[navigation_Builder::$suffix]: $m';
     if (e != null) {
       String? errorMessage;
       try {
