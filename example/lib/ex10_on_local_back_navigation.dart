@@ -34,8 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Books App',
-      routeInformationParser: navigator.routeInformationParser,
-      routerDelegate: navigator.routerDelegate,
+      routerConfig: navigator.routerConfig,
     );
   }
 }

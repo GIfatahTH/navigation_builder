@@ -9,12 +9,18 @@ final navigator = NavigationBuilder.create(
 );
 
 void main() {
-  runApp(
-    MaterialApp.router(
-      routerDelegate: navigator.routerDelegate,
-      routeInformationParser: navigator.routeInformationParser,
-    ),
-  );
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: navigator.routerConfig,
+    );
+  }
 }
 
 class MyHomePageViewModel {

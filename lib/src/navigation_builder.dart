@@ -137,6 +137,7 @@ abstract class NavigationBuilder {
   /// [RouteInformationParser] delegate.
   RouteInformationParser<PageSettings> get routeInformationParser =>
       RouterObjects.routeInformationParser!;
+  RouterConfig<PageSettings> get routerConfig => RouterObjects.routerConfig!;
 
   /// Set the route stack. It exposes the current [PageSettings] stack.
   void setRouteStack(
@@ -675,6 +676,15 @@ class NavigationBuilderImp extends NavigationBuilder {
     routeInformationParser.parseRouteInformation(RouteInformation(
       location: RouterObjects._initialRouteValue,
     ));
+  }
+
+  @override
+  RouterConfig<PageSettings> get routerConfig {
+    if (!_isInitialized) {
+      _isInitialized = true;
+      _resetDefaultState();
+    }
+    return super.routerConfig;
   }
 
   @override

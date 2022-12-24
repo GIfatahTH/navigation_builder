@@ -87,8 +87,7 @@ class App extends TopStatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationParser: navigator.routeInformationParser,
-      routerDelegate: navigator.routerDelegate,
+      routerConfig: navigator.routerConfig,
     );
   }
 }

@@ -4,6 +4,8 @@ abstract class RouterObjects {
   static const String rootName = '/RoOoTName';
   static String? _initialRouteValue;
   static RouteInformationParserImp? routeInformationParser;
+
+  static RouterConfig<PageSettings>? routerConfig;
   static Map<Uri, Widget Function(RouteData routeData)>? routers;
   // ignore: prefer_function_declarations_over_variables
   static Widget Function(RouteData data) _unknownRoute = (data) {
@@ -89,6 +91,14 @@ abstract class RouterObjects {
     );
     RouterDelegateImp._completers.clear();
     routeInformationParser = RouteInformationParserImp(rootDelegate!);
+    routerConfig = RouterConfig(
+      routerDelegate: rootDelegate!,
+      routeInformationParser: routeInformationParser,
+      routeInformationProvider: PlatformRouteInformationProvider(
+        initialRouteInformation:
+            RouteInformation(location: initialRoute ?? '/'),
+      ),
+    );
   }
 
   static RouterDelegateImp? rootDelegate;
