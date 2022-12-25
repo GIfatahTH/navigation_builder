@@ -1,8 +1,8 @@
 part of 'navigation_builder.dart';
 
-final scaffoldObject = _Scaffold();
+final scaffoldObject = ScaffoldObject();
 
-class _Scaffold {
+class ScaffoldObject {
   NavigationBuilder? _mock;
 
   BuildContext? _context;
