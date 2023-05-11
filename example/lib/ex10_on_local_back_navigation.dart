@@ -24,6 +24,7 @@ final navigator = NavigationBuilder.create(
       );
       return false;
     }
+    return null;
   },
 );
 

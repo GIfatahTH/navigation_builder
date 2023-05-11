@@ -36,6 +36,7 @@ final navigator = NavigationBuilder.create(
       // Redirect the user to the home page
       return data.redirectTo('/');
     }
+    return null;
   },
 );
 

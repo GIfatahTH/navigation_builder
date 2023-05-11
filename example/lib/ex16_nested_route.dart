@@ -61,6 +61,7 @@ final NavigationBuilder navigator = NavigationBuilder.create(
         postponeToNextFrame: true,
       );
     }
+    return null;
   },
 );
 
