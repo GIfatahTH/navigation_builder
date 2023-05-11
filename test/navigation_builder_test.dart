@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:navigation_builder/src/common/logger.dart';
 
 import 'package:navigation_builder/src/navigation_builder.dart';
-import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
 class SimpleRouteInformationProvider extends RouteInformationProvider
     with ChangeNotifier {
@@ -3226,18 +3225,28 @@ void main() {
         'Test global redirect with navigation on data of an other state'
         'THEN',
         (tester) async {
-          final isLogged = RM.inject<bool>(
-            () => false,
-            sideEffects: SideEffects.onData(
-              (data) {
-                if (!data) {
-                  _navigator.toAndRemoveUntil('/login');
-                } else {
-                  _navigator.toAndRemoveUntil('/');
-                }
-              },
-            ),
-          );
+          // final isLogged = RM.inject<bool>(
+          //   () => false,
+          //   sideEffects: SideEffects.onData(
+          //     (data) {
+          //       if (!data) {
+          //         _navigator.toAndRemoveUntil('/login');
+          //       } else {
+          //         _navigator.toAndRemoveUntil('/');
+          //       }
+          //     },
+          //   ),
+          // );
+          bool isLogged = false;
+
+          void sideEffects(bool data) {
+            if (!data) {
+              _navigator.toAndRemoveUntil('/login');
+            } else {
+              _navigator.toAndRemoveUntil('/');
+            }
+          }
+
           final routes = {
             '/': (_) => const Text('/'),
             '/login': (_) => const Text('/login'),
@@ -3245,11 +3254,11 @@ void main() {
           final widget = _TopWidget(
             routers: routes,
             routeInterceptor: (data) {
-              if (!isLogged.state && data.location != '/login') {
+              if (!isLogged && data.location != '/login') {
                 return data.redirectTo('/login');
               }
 
-              if (isLogged.state && data.location == '/login') {
+              if (isLogged && data.location == '/login') {
                 return data.redirectTo('/');
               }
               return null;
@@ -3257,11 +3266,13 @@ void main() {
           );
           await tester.pumpWidget(widget);
           expect(find.text('/login'), findsOneWidget);
-          isLogged.toggle();
+          isLogged = !isLogged;
+          sideEffects(isLogged);
           await tester.pumpAndSettle();
           expect(find.text('/'), findsOneWidget);
           //
-          isLogged.toggle();
+          isLogged = !isLogged;
+          sideEffects(isLogged);
           await tester.pumpAndSettle();
           expect(find.text('/login'), findsOneWidget);
         },
@@ -5476,54 +5487,54 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Test Navigator2 with TopStatelessWidget',
-    (tester) async {
-      final navigator = NavigationBuilder.create(
-        // debugPrintWhenRouted: true,
-        routes: {
-          '/': (data) => const Text('/'),
-          '/page1': (data) => const Text('/page1'),
-        },
-      );
-      final widget = MaterialApp.router(
-        routerConfig: navigator.routerConfig,
-      );
-      bool shouldThrow = true;
-      await tester.pumpWidget(
-        TopAppWidget(
-          ensureInitialization: () => [
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => shouldThrow ? throw Exception('error') : 1,
-            )
-          ],
-          onWaiting: () => const Scaffold(
-            body: Text('Waiting...'),
-          ),
-          onError: (err, refresh) => Scaffold(
-            body: ElevatedButton(
-              child: const Text('Error'),
-              onPressed: refresh,
-            ),
-          ),
-          builder: (context) {
-            return widget;
-          },
-        ),
-      );
-      expect(find.text('Waiting...'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('Error'), findsOneWidget);
-      shouldThrow = false;
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pump();
-      //
-      expect(find.text('Waiting...'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('/'), findsOneWidget);
-    },
-  );
+  // testWidgets(
+  //   'Test Navigator2 with TopStatelessWidget',
+  //   (tester) async {
+  //     final navigator = NavigationBuilder.create(
+  //       // debugPrintWhenRouted: true,
+  //       routes: {
+  //         '/': (data) => const Text('/'),
+  //         '/page1': (data) => const Text('/page1'),
+  //       },
+  //     );
+  //     final widget = MaterialApp.router(
+  //       routerConfig: navigator.routerConfig,
+  //     );
+  //     bool shouldThrow = true;
+  //     await tester.pumpWidget(
+  //       TopAppWidget(
+  //         ensureInitialization: () => [
+  //           Future.delayed(
+  //             const Duration(seconds: 1),
+  //             () => shouldThrow ? throw Exception('error') : 1,
+  //           )
+  //         ],
+  //         onWaiting: () => const Scaffold(
+  //           body: Text('Waiting...'),
+  //         ),
+  //         onError: (err, refresh) => Scaffold(
+  //           body: ElevatedButton(
+  //             child: const Text('Error'),
+  //             onPressed: refresh,
+  //           ),
+  //         ),
+  //         builder: (context) {
+  //           return widget;
+  //         },
+  //       ),
+  //     );
+  //     expect(find.text('Waiting...'), findsOneWidget);
+  //     await tester.pump(const Duration(seconds: 1));
+  //     expect(find.text('Error'), findsOneWidget);
+  //     shouldThrow = false;
+  //     await tester.tap(find.byType(ElevatedButton));
+  //     await tester.pump();
+  //     //
+  //     expect(find.text('Waiting...'), findsOneWidget);
+  //     await tester.pump(const Duration(seconds: 1));
+  //     expect(find.text('/'), findsOneWidget);
+  //   },
+  // );
 
   testWidgets(
     'Test OnNavigateBackScope',
