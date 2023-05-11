@@ -65,8 +65,7 @@ class _Navigate {
       Animation<double>,
       Animation<double>,
       Widget,
-    )?
-        transitionsBuilder,
+    )? transitionsBuilder,
     Widget Function(String routeName)? unknownRoute,
   }) {
     assert(routes_.isNotEmpty);
@@ -130,8 +129,7 @@ class _Navigate {
       Animation<double>,
       Animation<double>,
       Widget,
-    )?
-        transitionsBuilder,
+    )? transitionsBuilder,
   }) {
     Widget? _page;
     return pageRouteBuilder != null
@@ -231,8 +229,7 @@ class _Navigate {
       Animation<double> animation,
       Animation<double> secondAnimation,
       Widget child,
-    )?
-        transitionsBuilder,
+    )? transitionsBuilder,
   }) {
     _fullscreenDialog = fullscreenDialog;
     _maintainState = maintainState;
@@ -327,6 +324,12 @@ class _Navigate {
     Map<String, String>? queryParams,
     bool fullscreenDialog = false,
     bool maintainState = true,
+    Widget Function(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondAnimation,
+      Widget child,
+    )? transitionsBuilder,
   }) {
     _fullscreenDialog = fullscreenDialog;
     _maintainState = maintainState;
@@ -729,7 +732,7 @@ class _Navigate {
   Future<T?> toCupertinoModalPopup<T>(
     Widget cupertinoModalPopup, {
     ImageFilter? filter,
-    bool? semanticsDismissible,
+    bool semanticsDismissible = false,
     bool postponeToNextFrame = false,
   }) {
     Future<T?> fn() {
