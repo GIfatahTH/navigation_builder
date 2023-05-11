@@ -65,8 +65,7 @@ abstract class NavigationBuilder {
       Animation<double> animation,
       Animation<double> secondAnimation,
       Widget child,
-    )?
-        transitionsBuilder,
+    )? transitionsBuilder,
     Duration? transitionDuration,
     Redirect? Function(RouteData data)? onNavigate,
     bool? Function(RouteData? data)? onNavigateBack,
@@ -176,8 +175,7 @@ abstract class NavigationBuilder {
       Animation<double> animation,
       Animation<double> secondAnimation,
       Widget child,
-    )?
-        transitionsBuilder,
+    )? transitionsBuilder,
   }) {
     final r = navigateObject.toNamed<T>(
       routeName,
@@ -359,6 +357,8 @@ abstract class NavigationBuilder {
     Map<String, String>? queryParams,
     bool fullscreenDialog = false,
     bool maintainState = true,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transitionsBuilder,
   }) {
     final r = navigateObject.toReplacementNamed<T, TO>(
       routeName,
@@ -367,6 +367,7 @@ abstract class NavigationBuilder {
       queryParams: queryParams,
       fullscreenDialog: fullscreenDialog,
       maintainState: maintainState,
+      transitionsBuilder: transitionsBuilder,
     );
     if (navigationBuilderMockedInstance != null) {
       return navigationBuilderMockedInstance!.toReplacement<T, TO>(
@@ -376,6 +377,7 @@ abstract class NavigationBuilder {
         queryParams: queryParams,
         fullscreenDialog: fullscreenDialog,
         maintainState: maintainState,
+        transitionsBuilder: transitionsBuilder,
       );
     }
     return r;
@@ -470,7 +472,6 @@ abstract class NavigationBuilder {
       fullscreenDialog: fullscreenDialog,
       maintainState: maintainState,
     );
-    ;
   }
 
   ///{@template forceBack}
@@ -683,7 +684,7 @@ abstract class NavigationBuilder {
   Future<T?> toCupertinoModalPopup<T>(
     Widget cupertinoModalPopup, {
     ImageFilter? filter,
-    bool? semanticsDismissible,
+    bool semanticsDismissible = false,
     bool postponeToNextFrame = false,
   }) {
     if (navigationBuilderMockedInstance != null) {
@@ -747,6 +748,7 @@ class NavigationBuilderImp extends NavigationBuilder {
   @override
   void injectMock(NavigationBuilder mock, {String? startRoute}) {
     super.injectMock(mock);
+    // should start lazily
     routerDelegate;
     if (startRoute != null) {
       RouterObjects._initialRouteValue = startRoute;
