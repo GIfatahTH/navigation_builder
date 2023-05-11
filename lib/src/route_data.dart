@@ -112,7 +112,7 @@ class RouteData {
   final List<RouteData> _redirectedFrom;
 
   String get signature => '$uri$arguments${redirectedFrom?.uri}';
-  GlobalKey<NavigatorState>? navigatorKey;
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   /// Object that holds information about the active route.
   RouteData({
@@ -194,7 +194,7 @@ class RouteData {
     String? location,
     Map<String, String>? queryParams,
     Map<String, String>? pathParams,
-    dynamic? arguments,
+    dynamic arguments,
     List<RouteData>? redirectedFrom,
     bool? pathEndsWithSlash,
     String? subLocation,
