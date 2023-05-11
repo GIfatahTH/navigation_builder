@@ -642,9 +642,12 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     if (_canPop) {
       if (!forceBack) {
         final routeDate = _pageSettingsList.last.rData!;
-        bool? canBack = (RouterObjects.navigationBuilder!.onBack
-                    ?.call(routeDate) ??
-                true) &&
+        // TODO to test the change.
+        // Why RouterObjects.navigationBuilder!.onBack?.call(routeDate) is called
+        // twice the old way
+        bool? canBack =
+            RouterObjects.navigationBuilder!.onBack?.call(routeDate) ?? true;
+        canBack = canBack &&
             (RouterObjects._canNavigateBackScoped[routeDate.location]?.call() ??
                 true);
         if (canBack == false) {
