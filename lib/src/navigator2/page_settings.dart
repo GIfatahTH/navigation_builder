@@ -134,7 +134,6 @@ class PageSettings extends RouteSettings {
   String get _signatureWithChild =>
       '$signature${child is RouteWidget ? (child as RouteWidget)._getLeafConfig()?.child?.key : child?.key}';
 
-  @override
   PageSettings copyWith({
     String? name,
     String? delegateName,
