@@ -91,6 +91,13 @@ abstract class RouterObjects {
     );
     RouterDelegateImp._completers.clear();
     routeInformationParser = RouteInformationParserImp(rootDelegate!);
+    assert(() {
+      // TODO check feasibility
+      if (kDebugMode) {
+        WidgetsFlutterBinding.ensureInitialized();
+      }
+      return true;
+    }());
     routerConfig = RouterConfig(
       routerDelegate: rootDelegate!,
       routeInformationParser: routeInformationParser,
@@ -354,7 +361,7 @@ abstract class RouterObjects {
   }
 
   static final Map<String, bool? Function()> _canNavigateBackScoped = {};
-  @mustCallSuper
+
   static VoidCallback _addToCanNavigateCallBack(
       bool? Function() fn, String location) {
     _canNavigateBackScoped[location] = fn;
