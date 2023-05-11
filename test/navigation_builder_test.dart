@@ -1725,7 +1725,7 @@ void main() {
       };
       final widget = _TopWidget(routers: routes);
       await tester.pumpWidget(widget);
-      dynamic message;
+
       _navigator.to('/page1');
       await tester.pumpAndSettle();
       _navigator.to('/page2');
@@ -2950,6 +2950,7 @@ void main() {
               postponeToNextFrame: true,
             );
           }
+          return null;
         },
       );
       await tester.pumpWidget(widget);
@@ -3013,6 +3014,7 @@ void main() {
             _navigator.toDialog(const AlertDialog());
             return exitApp;
           }
+          return null;
         },
       );
       final widget = MaterialApp.router(
@@ -3250,6 +3252,7 @@ void main() {
               if (isLogged.state && data.location == '/login') {
                 return data.redirectTo('/');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3323,6 +3326,7 @@ void main() {
               if (data.location == '/page1/page11') {
                 return data.redirectTo('/home');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3424,6 +3428,8 @@ void main() {
                   ),
             },
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3464,6 +3470,8 @@ void main() {
             initialRoute: '/login',
             // // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3538,6 +3546,7 @@ void main() {
               } else if (isSignedIn && signingIn) {
                 return data.redirectTo('/books');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3590,6 +3599,7 @@ void main() {
               } else if (isSignedIn && signingIn) {
                 return data.redirectTo('/books');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3637,6 +3647,8 @@ void main() {
             routers: routes,
             // // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3693,6 +3705,8 @@ void main() {
             // debugPrintWhenRouted: true,
             ignoreSingleRouteMapAssertion: false,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3753,6 +3767,8 @@ void main() {
             routers: routes,
             // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3798,6 +3814,7 @@ void main() {
             routers: routes,
             routeInterceptor: (data) {
               data.log();
+              return null;
             },
             unknownRoute: (data) {
               return Text('404 ${data.location}');
@@ -3911,7 +3928,9 @@ void main() {
       final widget = _TopWidget(
         routers: routes,
         // debugPrintWhenRouted: true,
-        routeInterceptor: (data) {},
+        routeInterceptor: (data) {
+          return null;
+        },
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -3998,7 +4017,9 @@ void main() {
       final widget = _TopWidget(
         routers: routes,
         // debugPrintWhenRouted: true,
-        routeInterceptor: (data) {},
+        routeInterceptor: (data) {
+          return null;
+        },
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -4381,6 +4402,7 @@ void main() {
             );
             return false;
           }
+          return null;
         },
       );
       await tester.pumpWidget(widget);
@@ -4828,6 +4850,7 @@ void main() {
               location != '/page1/page11/page12') {
             return data.redirectTo('/page1/page11/page12');
           }
+          return null;
         },
       );
 
@@ -4995,6 +5018,7 @@ void main() {
           if (isLogged && data.location != '/') {
             return data.redirectTo('/');
           }
+          return null;
         },
       );
       final mock = NavigatorMock();
@@ -6031,6 +6055,7 @@ class NavigatorMock extends NavigationBuilder {
               Animation<double> secondAnimation, Widget child)?
           transitionsBuilder}) async {
     message = 'to';
+    return null;
   }
 
   @override
@@ -6041,6 +6066,7 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'toAndRemoveUntil';
+    return null;
   }
 
   @override
@@ -6058,17 +6084,22 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'toPageless';
+    return null;
   }
 
   @override
   Future<T?> toReplacement<T extends Object?, TO extends Object?>(
-      String routeName,
-      {TO? result,
-      Object? arguments,
-      Map<String, String>? queryParams,
-      bool fullscreenDialog = false,
-      bool maintainState = true}) async {
+    String routeName, {
+    TO? result,
+    Object? arguments,
+    Map<String, String>? queryParams,
+    bool fullscreenDialog = false,
+    bool maintainState = true,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transitionsBuilder,
+  }) async {
     message = 'toReplacement';
+    return null;
   }
 
   @override
@@ -6079,6 +6110,7 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'backAndToNamed';
+    return null;
   }
 
   @override
@@ -6098,6 +6130,7 @@ class NavigatorMock extends NavigationBuilder {
       Color? barrierColor,
       bool postponeToNextFrame = false}) async {
     message = 'toBottomSheet';
+    return null;
   }
 
   @override
@@ -6105,6 +6138,7 @@ class NavigatorMock extends NavigationBuilder {
       {bool barrierDismissible = false,
       bool postponeToNextFrame = false}) async {
     message = 'toCupertinoDialog';
+    return null;
   }
 
   @override
@@ -6113,6 +6147,7 @@ class NavigatorMock extends NavigationBuilder {
       bool? semanticsDismissible,
       bool postponeToNextFrame = false}) async {
     message = 'toCupertinoModalPopup';
+    return null;
   }
 
   @override
@@ -6122,5 +6157,6 @@ class NavigatorMock extends NavigationBuilder {
       bool useSafeArea = true,
       bool postponeToNextFrame = false}) async {
     message = 'toDialog';
+    return null;
   }
 }
