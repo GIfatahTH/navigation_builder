@@ -152,10 +152,11 @@ packages:
   navigation_builder:
     dependency: "direct main"
     description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.0.2+5"
+      name: navigation_builder
+      sha256: "95e25150191d9cd4e4b86504f33cd9e786d1e6732edb2e3e635bbedc5ef0dea7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   nested:
     dependency: transitive
     description:
@@ -213,10 +214,10 @@ packages:
     dependency: "direct main"
     description:
       name: states_rebuilder
-      sha256: a246a74454ee8816ce08362fea559e7e12e924c417a79ffa2eef3660432559d4
+      sha256: bf1a5ab5c543acdefce35e60f482eb7ab592339484fe3266d147ee597f18dc92
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0+1"
+    version: "6.3.0"
   stream_channel:
     dependency: transitive
     description:
