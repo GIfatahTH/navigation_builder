@@ -75,6 +75,7 @@ final navigator = NavigationBuilder.create(
       else if (signedIn && signingIn) {
         return routeData.redirectTo('/books');
       }
+      return null;
     });
 
 class App extends TopStatelessWidget {

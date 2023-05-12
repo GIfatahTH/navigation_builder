@@ -9,7 +9,7 @@ void main() {
   runApp(const MyApp());
 }
 
-final navigator = NavigationBuilder.create(
+final NavigationBuilder navigator = NavigationBuilder.create(
   builder: (routerOutlet) {
     return Builder(
       builder: (context) {

@@ -1,10 +1,10 @@
 name: navigation_builder
 description: A Flutter Navigation 2 with the ease of Navigation 1.
-version: 0.0.2+3
+version: 0.0.3
 homepage: https://github.com/GIfatahTH/navigation_builder
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
+  sdk: '>=2.18.2 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -15,7 +15,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  states_rebuilder: ^6.1.0+1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

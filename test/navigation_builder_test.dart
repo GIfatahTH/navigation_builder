@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:navigation_builder/src/common/logger.dart';
 
 import 'package:navigation_builder/src/navigation_builder.dart';
-import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
 class SimpleRouteInformationProvider extends RouteInformationProvider
     with ChangeNotifier {
@@ -1725,7 +1724,7 @@ void main() {
       };
       final widget = _TopWidget(routers: routes);
       await tester.pumpWidget(widget);
-      dynamic message;
+
       _navigator.to('/page1');
       await tester.pumpAndSettle();
       _navigator.to('/page2');
@@ -2950,6 +2949,7 @@ void main() {
               postponeToNextFrame: true,
             );
           }
+          return null;
         },
       );
       await tester.pumpWidget(widget);
@@ -3013,6 +3013,7 @@ void main() {
             _navigator.toDialog(const AlertDialog());
             return exitApp;
           }
+          return null;
         },
       );
       final widget = MaterialApp.router(
@@ -3224,18 +3225,28 @@ void main() {
         'Test global redirect with navigation on data of an other state'
         'THEN',
         (tester) async {
-          final isLogged = RM.inject<bool>(
-            () => false,
-            sideEffects: SideEffects.onData(
-              (data) {
-                if (!data) {
-                  _navigator.toAndRemoveUntil('/login');
-                } else {
-                  _navigator.toAndRemoveUntil('/');
-                }
-              },
-            ),
-          );
+          // final isLogged = RM.inject<bool>(
+          //   () => false,
+          //   sideEffects: SideEffects.onData(
+          //     (data) {
+          //       if (!data) {
+          //         _navigator.toAndRemoveUntil('/login');
+          //       } else {
+          //         _navigator.toAndRemoveUntil('/');
+          //       }
+          //     },
+          //   ),
+          // );
+          bool isLogged = false;
+
+          void sideEffects(bool data) {
+            if (!data) {
+              _navigator.toAndRemoveUntil('/login');
+            } else {
+              _navigator.toAndRemoveUntil('/');
+            }
+          }
+
           final routes = {
             '/': (_) => const Text('/'),
             '/login': (_) => const Text('/login'),
@@ -3243,22 +3254,25 @@ void main() {
           final widget = _TopWidget(
             routers: routes,
             routeInterceptor: (data) {
-              if (!isLogged.state && data.location != '/login') {
+              if (!isLogged && data.location != '/login') {
                 return data.redirectTo('/login');
               }
 
-              if (isLogged.state && data.location == '/login') {
+              if (isLogged && data.location == '/login') {
                 return data.redirectTo('/');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
           expect(find.text('/login'), findsOneWidget);
-          isLogged.toggle();
+          isLogged = !isLogged;
+          sideEffects(isLogged);
           await tester.pumpAndSettle();
           expect(find.text('/'), findsOneWidget);
           //
-          isLogged.toggle();
+          isLogged = !isLogged;
+          sideEffects(isLogged);
           await tester.pumpAndSettle();
           expect(find.text('/login'), findsOneWidget);
         },
@@ -3323,6 +3337,7 @@ void main() {
               if (data.location == '/page1/page11') {
                 return data.redirectTo('/home');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3424,6 +3439,8 @@ void main() {
                   ),
             },
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3464,6 +3481,8 @@ void main() {
             initialRoute: '/login',
             // // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3538,6 +3557,7 @@ void main() {
               } else if (isSignedIn && signingIn) {
                 return data.redirectTo('/books');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3590,6 +3610,7 @@ void main() {
               } else if (isSignedIn && signingIn) {
                 return data.redirectTo('/books');
               }
+              return null;
             },
           );
           await tester.pumpWidget(widget);
@@ -3637,6 +3658,8 @@ void main() {
             routers: routes,
             // // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3693,6 +3716,8 @@ void main() {
             // debugPrintWhenRouted: true,
             ignoreSingleRouteMapAssertion: false,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3753,6 +3778,8 @@ void main() {
             routers: routes,
             // debugPrintWhenRouted: true,
             routeInterceptor: (data) {
+              return null;
+
               // data.log();
             },
           );
@@ -3798,6 +3825,7 @@ void main() {
             routers: routes,
             routeInterceptor: (data) {
               data.log();
+              return null;
             },
             unknownRoute: (data) {
               return Text('404 ${data.location}');
@@ -3911,7 +3939,9 @@ void main() {
       final widget = _TopWidget(
         routers: routes,
         // debugPrintWhenRouted: true,
-        routeInterceptor: (data) {},
+        routeInterceptor: (data) {
+          return null;
+        },
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -3998,7 +4028,9 @@ void main() {
       final widget = _TopWidget(
         routers: routes,
         // debugPrintWhenRouted: true,
-        routeInterceptor: (data) {},
+        routeInterceptor: (data) {
+          return null;
+        },
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
@@ -4381,6 +4413,7 @@ void main() {
             );
             return false;
           }
+          return null;
         },
       );
       await tester.pumpWidget(widget);
@@ -4828,6 +4861,7 @@ void main() {
               location != '/page1/page11/page12') {
             return data.redirectTo('/page1/page11/page12');
           }
+          return null;
         },
       );
 
@@ -4995,6 +5029,7 @@ void main() {
           if (isLogged && data.location != '/') {
             return data.redirectTo('/');
           }
+          return null;
         },
       );
       final mock = NavigatorMock();
@@ -5452,54 +5487,54 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Test Navigator2 with TopStatelessWidget',
-    (tester) async {
-      final navigator = NavigationBuilder.create(
-        // debugPrintWhenRouted: true,
-        routes: {
-          '/': (data) => const Text('/'),
-          '/page1': (data) => const Text('/page1'),
-        },
-      );
-      final widget = MaterialApp.router(
-        routerConfig: navigator.routerConfig,
-      );
-      bool shouldThrow = true;
-      await tester.pumpWidget(
-        TopAppWidget(
-          ensureInitialization: () => [
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => shouldThrow ? throw Exception('error') : 1,
-            )
-          ],
-          onWaiting: () => const Scaffold(
-            body: Text('Waiting...'),
-          ),
-          onError: (err, refresh) => Scaffold(
-            body: ElevatedButton(
-              child: const Text('Error'),
-              onPressed: refresh,
-            ),
-          ),
-          builder: (context) {
-            return widget;
-          },
-        ),
-      );
-      expect(find.text('Waiting...'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('Error'), findsOneWidget);
-      shouldThrow = false;
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pump();
-      //
-      expect(find.text('Waiting...'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('/'), findsOneWidget);
-    },
-  );
+  // testWidgets(
+  //   'Test Navigator2 with TopStatelessWidget',
+  //   (tester) async {
+  //     final navigator = NavigationBuilder.create(
+  //       // debugPrintWhenRouted: true,
+  //       routes: {
+  //         '/': (data) => const Text('/'),
+  //         '/page1': (data) => const Text('/page1'),
+  //       },
+  //     );
+  //     final widget = MaterialApp.router(
+  //       routerConfig: navigator.routerConfig,
+  //     );
+  //     bool shouldThrow = true;
+  //     await tester.pumpWidget(
+  //       TopAppWidget(
+  //         ensureInitialization: () => [
+  //           Future.delayed(
+  //             const Duration(seconds: 1),
+  //             () => shouldThrow ? throw Exception('error') : 1,
+  //           )
+  //         ],
+  //         onWaiting: () => const Scaffold(
+  //           body: Text('Waiting...'),
+  //         ),
+  //         onError: (err, refresh) => Scaffold(
+  //           body: ElevatedButton(
+  //             child: const Text('Error'),
+  //             onPressed: refresh,
+  //           ),
+  //         ),
+  //         builder: (context) {
+  //           return widget;
+  //         },
+  //       ),
+  //     );
+  //     expect(find.text('Waiting...'), findsOneWidget);
+  //     await tester.pump(const Duration(seconds: 1));
+  //     expect(find.text('Error'), findsOneWidget);
+  //     shouldThrow = false;
+  //     await tester.tap(find.byType(ElevatedButton));
+  //     await tester.pump();
+  //     //
+  //     expect(find.text('Waiting...'), findsOneWidget);
+  //     await tester.pump(const Duration(seconds: 1));
+  //     expect(find.text('/'), findsOneWidget);
+  //   },
+  // );
 
   testWidgets(
     'Test OnNavigateBackScope',
@@ -6031,6 +6066,7 @@ class NavigatorMock extends NavigationBuilder {
               Animation<double> secondAnimation, Widget child)?
           transitionsBuilder}) async {
     message = 'to';
+    return null;
   }
 
   @override
@@ -6041,6 +6077,7 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'toAndRemoveUntil';
+    return null;
   }
 
   @override
@@ -6058,17 +6095,22 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'toPageless';
+    return null;
   }
 
   @override
   Future<T?> toReplacement<T extends Object?, TO extends Object?>(
-      String routeName,
-      {TO? result,
-      Object? arguments,
-      Map<String, String>? queryParams,
-      bool fullscreenDialog = false,
-      bool maintainState = true}) async {
+    String routeName, {
+    TO? result,
+    Object? arguments,
+    Map<String, String>? queryParams,
+    bool fullscreenDialog = false,
+    bool maintainState = true,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transitionsBuilder,
+  }) async {
     message = 'toReplacement';
+    return null;
   }
 
   @override
@@ -6079,6 +6121,7 @@ class NavigatorMock extends NavigationBuilder {
       bool fullscreenDialog = false,
       bool maintainState = true}) async {
     message = 'backAndToNamed';
+    return null;
   }
 
   @override
@@ -6098,6 +6141,7 @@ class NavigatorMock extends NavigationBuilder {
       Color? barrierColor,
       bool postponeToNextFrame = false}) async {
     message = 'toBottomSheet';
+    return null;
   }
 
   @override
@@ -6105,6 +6149,7 @@ class NavigatorMock extends NavigationBuilder {
       {bool barrierDismissible = false,
       bool postponeToNextFrame = false}) async {
     message = 'toCupertinoDialog';
+    return null;
   }
 
   @override
@@ -6113,6 +6158,7 @@ class NavigatorMock extends NavigationBuilder {
       bool? semanticsDismissible,
       bool postponeToNextFrame = false}) async {
     message = 'toCupertinoModalPopup';
+    return null;
   }
 
   @override
@@ -6122,5 +6168,6 @@ class NavigatorMock extends NavigationBuilder {
       bool useSafeArea = true,
       bool postponeToNextFrame = false}) async {
     message = 'toDialog';
+    return null;
   }
 }

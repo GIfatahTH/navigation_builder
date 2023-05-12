@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:navigation_builder/navigation_builder.dart';
-import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
 final _navigator = NavigationBuilder.create(routes: {
   '/': (data) {
@@ -10,7 +9,7 @@ final _navigator = NavigationBuilder.create(routes: {
       body: Builder(
         builder: (ctx) {
           context = ctx;
-          return OnBuilder(listenTo: 0.inj(), builder: () => Container());
+          return Container();
         },
       ),
       drawer: Text('Drawer'),
@@ -22,7 +21,7 @@ final _navigator = NavigationBuilder.create(routes: {
       body: Builder(
         builder: (ctx) {
           context = ctx;
-          return OnBuilder(listenTo: 0.inj(), builder: () => Container());
+          return Container();
         },
       ),
       drawer: Text('Drawer of page2'),
@@ -35,7 +34,6 @@ BuildContext? context;
 void main() {
   setUp(() {
     context = null;
-    RM.disposeAll();
   });
   testWidgets('Throw exception no scaffold', (tester) async {
     final widget = MaterialApp(

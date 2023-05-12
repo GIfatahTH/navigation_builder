@@ -31,13 +31,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  navigation_builder:
-    path: ../
+  # navigation_builder:
+  #   path: ../
   url_launcher: ^6.0.0
   adaptive_navigation: ^0.0.3
   url_strategy: ^0.2.0
   provider: ^6.0.2
-  states_rebuilder:
+  navigation_builder: ^0.0.3
+  states_rebuilder: ^6.3.0
 
 
   # The following adds the Cupertino Icons font to your application.
