@@ -99,7 +99,7 @@ No valid BuildContext is defined yet
   ///    myNavigator.scaffold.showBottomSheet(...);
   ///   }
   ///  ```
-  PersistentBottomSheetController<T> showBottomSheet<T>(
+  PersistentBottomSheetController showBottomSheet(
     Widget bottomSheet, {
     Color? backgroundColor,
     double? elevation,
@@ -110,7 +110,7 @@ No valid BuildContext is defined yet
     AnimationController? transitionAnimationController,
   }) {
     if (_mock != null) {
-      return _mock!.scaffold.showBottomSheet<T>(
+      return _mock!.scaffold.showBottomSheet(
         bottomSheet,
         backgroundColor: backgroundColor,
         elevation: elevation,
@@ -121,7 +121,7 @@ No valid BuildContext is defined yet
         transitionAnimationController: transitionAnimationController,
       );
     }
-    final r = scaffoldState.showBottomSheet<T>(
+    final r = scaffoldState.showBottomSheet(
       (_) => bottomSheet,
       backgroundColor: backgroundColor,
       elevation: elevation,
