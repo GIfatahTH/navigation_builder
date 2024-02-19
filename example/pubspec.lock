@@ -169,10 +169,10 @@ packages:
     dependency: "direct main"
     description:
       name: navigation_builder
-      sha256: "95e25150191d9cd4e4b86504f33cd9e786d1e6732edb2e3e635bbedc5ef0dea7"
+      sha256: "083b40bbcd55bfc3dbf487b3f705bb0659fd33d95cfb3220edd53e8bc71cca8e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4-dev"
   nested:
     dependency: transitive
     description:
