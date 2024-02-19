@@ -311,7 +311,7 @@ class RouteWidget extends StatelessWidget {
       _routeInformationParser =
           RouteInformationParserImp(_routerDelegate, (p) => pages = p);
       _routeInformationParser._parseRouteInformation(
-        RouteInformation(location: _path, state: {
+        RouteInformation(uri: Uri.parse(_path), state: {
           'routeData': _routeData,
           'skipHomeSlash': _parentToSubRouteMessage.skipHomeSlash,
           'queryParams': _parentToSubRouteMessage.queryParams

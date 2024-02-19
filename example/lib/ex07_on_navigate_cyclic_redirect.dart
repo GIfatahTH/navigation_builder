@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
-// This example said do not fear cyclic redirect
+// This example is here to say do not fear cyclic redirect
 void main() {
   runApp(const MyApp());
 }

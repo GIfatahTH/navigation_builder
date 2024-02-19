@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
-// Show case on how to custom page transition animation
+// Show case on how to customize page transition animation
 void main() {
   runApp(const MyApp());
 }
@@ -67,6 +67,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData.light(useMaterial3: false),
       title: 'Books App',
       routerConfig: navigator.routerConfig,
     );

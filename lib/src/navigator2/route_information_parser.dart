@@ -36,8 +36,20 @@ class RouteInformationParserImp extends RouteInformationParser<PageSettings> {
     }
     List<PageSettings> _pageSettingsList = _routerDelegate._pageSettingsList;
     final settings = PageSettings(
-      name:
-          RouterObjects._initialRouteValue ?? routeInformation.location ?? '/',
+      name: RouterObjects._initialRouteValue ??
+          Uri.decodeComponent(
+            Uri(
+              path: routeInformation.uri.path.isEmpty
+                  ? '/'
+                  : routeInformation.uri.path,
+              queryParameters: routeInformation.uri.queryParametersAll.isEmpty
+                  ? null
+                  : routeInformation.uri.queryParametersAll,
+              fragment: routeInformation.uri.fragment.isEmpty
+                  ? null
+                  : routeInformation.uri.fragment,
+            ).toString(),
+          ),
       arguments: arguments,
       queryParams: queryParams,
     );
@@ -87,7 +99,7 @@ class RouteInformationParserImp extends RouteInformationParser<PageSettings> {
     }());
 
     return RouteInformation(
-      location: name,
+      uri: Uri.parse(name ?? '/'),
     );
   }
 }

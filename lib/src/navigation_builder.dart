@@ -512,7 +512,7 @@ abstract class NavigationBuilder {
   /// Used in test to simulate a deep link call.
   void deepLinkTest(String url) {
     routeInformationParser.parseRouteInformation(
-      RouteInformation(location: url),
+      RouteInformation(uri: Uri.parse(url)),
     );
     (routerDelegate as RouterDelegateImp).updateRouteStack();
   }
@@ -754,7 +754,7 @@ class NavigationBuilderImp extends NavigationBuilder {
       RouterObjects._initialRouteValue = startRoute;
     }
     routeInformationParser.parseRouteInformation(RouteInformation(
-      location: RouterObjects._initialRouteValue,
+      uri: Uri.parse(RouterObjects._initialRouteValue ?? '/'),
     ));
   }
 

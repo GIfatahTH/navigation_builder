@@ -73,7 +73,7 @@ void main() {
       await tester.tap(find.text('Show About dialog'));
       await tester.pumpAndSettle();
       expect(find.byType(AboutDialog), findsOneWidget);
-      await tester.tap(find.text('CLOSE'));
+      await tester.tap(find.text('Close'));
       await tester.pumpAndSettle();
       expect(find.byType(AboutDialog), findsNothing);
       //
