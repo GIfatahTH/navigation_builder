@@ -206,10 +206,10 @@ class _ResolveLocation {
       }
 
       final routeData = RouteData(
-        location: message.isNotEmpty ? message : path,
-        subLocation: message.isNotEmpty ? message : path,
+        location: path,
+        subLocation: path,
         path: path,
-        arguments: null,
+        arguments: message.isNotEmpty ? message : null,
         pathParams: const {},
         queryParams: const {},
         pathEndsWithSlash: false,
@@ -395,12 +395,12 @@ class _ResolveLocation {
             if (page is! RouteWidget) {
               continue;
             }
-            final _canHandleLocation = canHandleLocation(
+            final checkCanHandleLocation = canHandleLocation(
               routes: page._routes,
               routeName: util.routeName,
               uri: pathUrl,
             );
-            if (!_canHandleLocation) {
+            if (!checkCanHandleLocation) {
               continue;
             }
           }
@@ -478,34 +478,34 @@ class _ResolveLocation {
     var inRouteName = ResolvePathRouteUtil.inRouteName;
 
     String path = uri.path;
-    late bool _canHandleLocation;
+    late bool checkCanHandleLocation;
 
     if (to == baseUrlPath ||
         to.startsWith(baseUrlPath + (baseUrlPath == '/' ? '' : '/'))) {
-      _canHandleLocation = true;
+      checkCanHandleLocation = true;
     } else {
-      _canHandleLocation = canHandleLocation(
+      checkCanHandleLocation = canHandleLocation(
         routes: routes,
         routeName: util.routeName,
         uri: uri,
       );
-      if (_canHandleLocation) {
+      if (checkCanHandleLocation) {
         path = baseUrlPath + to;
       }
     }
 
-    if (_canHandleLocation) {
+    if (checkCanHandleLocation) {
       r = routes;
       inRouteName = null;
     } else if (routes != ResolvePathRouteUtil.inRoutes &&
         r != ResolvePathRouteUtil.inRoutes) {
-      _canHandleLocation = canHandleLocation(
+      checkCanHandleLocation = canHandleLocation(
         routes: ResolvePathRouteUtil.inRoutes!,
         routeName: util.routeName,
         uri: uri,
       );
 
-      if (_canHandleLocation) {
+      if (checkCanHandleLocation) {
         r = ResolvePathRouteUtil.inRoutes!;
       }
     }
@@ -513,8 +513,8 @@ class _ResolveLocation {
     return call(
       routes: r,
       path: path,
-      baseUrlPath: _canHandleLocation ? inRouteName ?? baseUrlPath : '/',
-      routeUri: _canHandleLocation ? routeUri : '/',
+      baseUrlPath: checkCanHandleLocation ? inRouteName ?? baseUrlPath : '/',
+      routeUri: checkCanHandleLocation ? routeUri : '/',
       skipHomeSlash: true,
       queryParams: uri.queryParameters,
     );

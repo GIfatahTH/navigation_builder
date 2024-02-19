@@ -68,7 +68,9 @@ class _TopWidget extends StatelessWidget {
         ignoreSingleRouteMapAssertion;
     _navigator = NavigationBuilder.create(
       routes: routers,
-      unknownRoute: unknownRoute ?? (data) => Text('404 ${data.location}'),
+      unknownRoute: unknownRoute ??
+          (data) => Text(
+              '404 ${(data.arguments is String && (data.arguments as String).startsWith('Infinite redirect loop: ')) ? data.arguments : data.location}'),
       transitionsBuilder: _transitionsBuilder,
       transitionDuration: transitionDuration,
       onNavigate: routeInterceptor,
@@ -2690,9 +2692,7 @@ void main() {
 
       _provider = SimpleRouteInformationProvider();
 
-      _provider!.value = const RouteInformation(
-        location: '/',
-      );
+      _provider!.value = RouteInformation(uri: Uri.parse('/'));
       final widget = _TopWidget(
         routers: routes,
         debugPrintWhenRouted: true,
@@ -2710,15 +2710,13 @@ void main() {
 
       //
       expect(find.text('/'), findsOneWidget);
-      expect(informationParser!.info!.location, '/');
+      expect(informationParser!.info!.uri.path, '/');
       expect(NavigationBuilderLogger.message.endsWith('DeepLink to: /'), true);
       //
-      _provider!.value = const RouteInformation(
-        location: '/page1/page11',
-      );
+      _provider!.value = RouteInformation(uri: Uri.parse('/page1/page11'));
       await tester.pumpAndSettle();
       expect(find.text('/page11-null'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
       expect(
         NavigationBuilderLogger.message.endsWith('DeepLink to: /page1/page11'),
         true,
@@ -2727,20 +2725,21 @@ void main() {
       _navigator.back();
       await tester.pumpAndSettle();
       // expect(find.text('/page1'), findsOneWidget);
-      // expect(informationParser!.info!.location, '/page1');
+      // expect(informationParser!.info!.uri.path, '/page1');
       // expect(NavigationBuilderLogger.message.endsWith('Back to: /page1'), true);
       // _navigator.back();
       // await tester.pumpAndSettle();
       expect(find.text('/'), findsOneWidget);
-      expect(informationParser!.info!.location, '/');
+      expect(informationParser!.info!.uri.path, '/');
       expect(NavigationBuilderLogger.message.endsWith('Back to: /'), true);
 
-      _provider!.value = const RouteInformation(
-        location: '/page1/page11?q=1',
+      _provider!.value = RouteInformation(
+        uri: Uri.parse('/page1/page11?q=1'),
       );
       await tester.pumpAndSettle();
       expect(find.text('/page11-1'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11?q=1');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '1'});
       expect(
         NavigationBuilderLogger.message
             .endsWith('DeepLink to: /page1/page11?q=1'),
@@ -2750,7 +2749,8 @@ void main() {
       _navigator.to('/page1/page11?q=2');
       await tester.pumpAndSettle();
       expect(find.text('/page11-2'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11?q=2');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '2'});
       expect(
         NavigationBuilderLogger.message
             .endsWith('Navigate to: /page1/page11?q=2'),
@@ -2760,7 +2760,8 @@ void main() {
       _navigator.back();
       await tester.pumpAndSettle();
       expect(find.text('/page11-1'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11?q=1');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '1'});
       expect(
           NavigationBuilderLogger.message
               .endsWith('Back to: /page1/page11?q=1'),
@@ -2769,14 +2770,14 @@ void main() {
       // _navigator.back();
       // await tester.pumpAndSettle();
       // expect(find.text('/page1'), findsOneWidget);
-      // expect(informationParser!.info!.location, '/page1');
+      // expect(informationParser!.info!.uri.path, '/page1');
       // expect(NavigationBuilderLogger.message.endsWith('Back to: /page1'), true);
 
       // //
       // _navigator.back();
       // await tester.pumpAndSettle();
       // expect(find.text('/'), findsOneWidget);
-      // expect(informationParser!.info!.location, '/');
+      // expect(informationParser!.info!.uri.path, '/');
       // expect(NavigationBuilderLogger.message.endsWith('Back to: /'), true);
 
       _navigator.to('/page1/page11?q=1');
@@ -2796,7 +2797,8 @@ void main() {
       _navigator.to('/page1/page11?q=3');
       await tester.pumpAndSettle();
       expect(find.text('/page11-3'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11?q=3');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '3'});
       expect(
         NavigationBuilderLogger.message
             .endsWith('Navigate to: /page1/page11?q=3'),
@@ -2805,12 +2807,13 @@ void main() {
       //
       _navigator.backUntil('/');
       await tester.pumpAndSettle();
-      _provider!.value = const RouteInformation(
-        location: '/page1/page11?q=2',
+      _provider!.value = RouteInformation(
+        uri: Uri.parse('/page1/page11?q=2'),
       );
       await tester.pumpAndSettle();
       expect(find.text('/page11-2'), findsOneWidget);
-      expect(informationParser!.info!.location, '/page1/page11?q=2');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '2'});
       expect(
         NavigationBuilderLogger.message
             .endsWith('DeepLink to: /page1/page11?q=2'),
@@ -2826,11 +2829,12 @@ void main() {
       expect(find.text('/'), findsOneWidget);
       expect(NavigationBuilderLogger.message.endsWith('Back to: /'), true);
 
-      _provider!.value = const RouteInformation(
-        location: '/page1/page11?q=10',
+      _provider!.value = RouteInformation(
+        uri: Uri(path: '/page1/page11', queryParameters: {'q': '10'}),
       );
       await tester.pumpAndSettle();
-      expect(informationParser!.info!.location, '/page1/page11?q=1');
+      expect(informationParser!.info!.uri.path, '/page1/page11');
+      expect(informationParser!.info!.uri.queryParameters, {'q': '1'});
       expect(find.text('/page11-1'), findsOneWidget);
       expect(
         NavigationBuilderLogger.message
@@ -2847,8 +2851,8 @@ void main() {
       expect(find.text('/'), findsOneWidget);
       expect(NavigationBuilderLogger.message.endsWith('Back to: /'), true);
 
-      _provider!.value = const RouteInformation(
-        location: '/page2?q=15',
+      _provider!.value = RouteInformation(
+        uri: Uri.parse('/page2?q=15'),
       );
       await tester.pumpAndSettle();
       expect(find.text('/page2-1'), findsOneWidget);
@@ -3311,9 +3315,7 @@ void main() {
 
           _provider = SimpleRouteInformationProvider();
 
-          _provider!.value = const RouteInformation(
-            location: '/',
-          );
+          _provider!.value = RouteInformation(uri: Uri.parse('/'));
           final widget = _TopWidget(
             routers: routes,
             // // debugPrintWhenRouted: true,
@@ -3385,27 +3387,21 @@ void main() {
           await tester.pumpAndSettle();
           expect(find.text('/home'), findsOneWidget);
 
-          _provider!.value = const RouteInformation(
-            location: '/',
-          );
+          _provider!.value = RouteInformation(uri: Uri.parse('/'));
           await tester.pumpAndSettle();
           expect(find.text('/home'), findsOneWidget);
 
-          _provider!.value = const RouteInformation(
-            location: '/home4',
-          );
+          _provider!.value = RouteInformation(uri: Uri.parse('/home4'));
           await tester.pumpAndSettle();
           expect(find.text('/home'), findsOneWidget);
-          _provider!.value = const RouteInformation(
-            location: '/home5',
-          );
+          _provider!.value = RouteInformation(uri: Uri.parse('/home5'));
           await tester.pumpAndSettle();
           expect(find.text('/page1'), findsOneWidget);
-          expect(informationParser!.info!.location, '/page1');
+          expect(informationParser!.info!.uri.path, '/page1');
           _navigator.back();
           await tester.pumpAndSettle();
           expect(find.text('/home'), findsOneWidget);
-          expect(informationParser!.info!.location, '/home');
+          expect(informationParser!.info!.uri.path, '/home');
         },
       );
 
@@ -3827,9 +3823,9 @@ void main() {
               data.log();
               return null;
             },
-            unknownRoute: (data) {
-              return Text('404 ${data.location}');
-            },
+            // unknownRoute: (data) {
+            //   return Text('404 ${data.location}');
+            // },
           );
           await tester.pumpWidget(widget);
           expect(find.text('Home'), findsOneWidget);
@@ -5645,9 +5641,7 @@ void main() {
     (tester) async {
       final provider = SimpleRouteInformationProvider();
 
-      provider.value = const RouteInformation(
-        location: '/',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/'));
       final navigator = NavigationBuilder.create(
         routes: {
           '/': (data) => const Text('/'),
@@ -5662,9 +5656,7 @@ void main() {
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
-      provider.value = const RouteInformation(
-        location: '/page1',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/page1'));
       await tester.pump();
       expect(find.text('/'), findsNothing);
       expect(find.text('/page1'), findsOneWidget);
@@ -5683,9 +5675,7 @@ void main() {
       expect(find.text('/page1'), findsNothing);
       expect(find.text('/page2'), findsOneWidget);
       //
-      provider.value = const RouteInformation(
-        location: '/',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/'));
       await tester.pump();
       await tester.pump();
       expect(find.text('/'), findsOneWidget);
@@ -5710,9 +5700,7 @@ void main() {
     (tester) async {
       final provider = SimpleRouteInformationProvider();
 
-      provider.value = const RouteInformation(
-        location: '/',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/'));
       final navigator = NavigationBuilder.create(
         transitionDuration: const Duration(seconds: 20),
         routes: {
@@ -5740,9 +5728,7 @@ void main() {
       );
       await tester.pumpWidget(widget);
       expect(find.text('/'), findsOneWidget);
-      provider.value = const RouteInformation(
-        location: '/page1',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/page1'));
       await tester.pump();
       expect(find.text('/'), findsNothing);
       expect(find.text('/page1'), findsOneWidget);
@@ -5761,17 +5747,13 @@ void main() {
       expect(find.text('/page1'), findsNothing);
       expect(find.text('/page11'), findsOneWidget);
       //
-      provider.value = const RouteInformation(
-        location: '/',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/'));
       await tester.pump();
       await tester.pump();
       expect(find.text('/'), findsOneWidget);
       expect(find.text('/page11'), findsNothing);
       //
-      provider.value = const RouteInformation(
-        location: '/page1/page11',
-      );
+      provider.value = RouteInformation(uri: Uri.parse('/page1/page11'));
       await tester.pump();
       expect(find.text('/'), findsNothing);
       expect(find.text('/page11'), findsOneWidget);
@@ -5779,9 +5761,8 @@ void main() {
       expect(find.text('/'), findsNothing);
       expect(find.text('/page11'), findsOneWidget);
       //
-      provider.value = const RouteInformation(
-        location: '/page1/page11/page111',
-      );
+      provider.value =
+          RouteInformation(uri: Uri.parse('/page1/page11/page111'));
       await tester.pump();
       await tester.pump();
       expect(find.text('/page11'), findsNothing);

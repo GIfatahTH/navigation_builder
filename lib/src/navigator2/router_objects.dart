@@ -13,7 +13,11 @@ abstract class RouterObjects {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('${data.location} not found'),
+          if (data.arguments is String &&
+              (data.arguments as String).startsWith('Infinite redirect loop: '))
+            Text(data.arguments)
+          else
+            Text('${data.location} not found'),
           TextButton(
             onPressed: () => navigateObject.back(),
             child: const Text('Go Back'),
@@ -103,7 +107,7 @@ abstract class RouterObjects {
       routeInformationParser: routeInformationParser,
       routeInformationProvider: PlatformRouteInformationProvider(
         initialRouteInformation:
-            RouteInformation(location: initialRoute ?? '/'),
+            RouteInformation(uri: Uri.parse(initialRoute ?? '/')),
       ),
     );
   }

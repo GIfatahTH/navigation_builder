@@ -99,7 +99,7 @@ No valid BuildContext is defined yet
   ///    myNavigator.scaffold.showBottomSheet(...);
   ///   }
   ///  ```
-  PersistentBottomSheetController<T> showBottomSheet<T>(
+  PersistentBottomSheetController showBottomSheet<T>(
     Widget bottomSheet, {
     Color? backgroundColor,
     double? elevation,
@@ -121,7 +121,7 @@ No valid BuildContext is defined yet
         transitionAnimationController: transitionAnimationController,
       );
     }
-    final r = scaffoldState.showBottomSheet<T>(
+    final r = scaffoldState.showBottomSheet(
       (_) => bottomSheet,
       backgroundColor: backgroundColor,
       elevation: elevation,
