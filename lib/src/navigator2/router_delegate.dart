@@ -12,10 +12,10 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     required this.transitionsBuilder,
     required this.transitionDuration,
     required this.delegateImplyLeadingToParent,
-  })  : _builder = builder,
-        _routes = routes,
-        _resolvePathRouteUtil = resolvePathRouteUtil,
-        _navigatorKey = key;
+  }) : _builder = builder,
+       _routes = routes,
+       _resolvePathRouteUtil = resolvePathRouteUtil,
+       _navigatorKey = key;
 
   final Map<Uri, Widget Function(RouteData)> _routes;
   final Widget Function(Widget)? _builder;
@@ -23,12 +23,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
   final GlobalKey<NavigatorState> _navigatorKey;
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
-  Widget Function(
-    BuildContext,
-    Animation<double>,
-    Animation<double>,
-    Widget,
-  )? transitionsBuilder;
+  Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+  transitionsBuilder;
   Duration? transitionDuration;
   final String delegateName;
   final bool hasBuilder;
@@ -74,7 +70,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
         Animation<double> animation,
         Animation<double> secondaryAnimation,
         Widget child,
-      )? routeWidgetTransitionsBuilder;
+      )?
+      routeWidgetTransitionsBuilder;
       Duration? routeWidgetTransitionDuration;
       final child = childMap.values.last;
       final hash = child.hashCode;
@@ -111,8 +108,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       }
 
       _pageSettingsList[i] = settings;
-      final Page<dynamic> p = RouterObjects.navigationBuilder?.pageBuilder ==
-              null
+      final Page<dynamic> p =
+          RouterObjects.navigationBuilder?.pageBuilder == null
           ? MaterialPageImp(
               child: settings.child!,
               key: settings.key,
@@ -127,7 +124,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
                   routeWidgetTransitionDuration ?? transitionDuration,
             )
           : //A custom pageBuilder is defined
-          RouterObjects.navigationBuilder!.pageBuilder!(
+            RouterObjects.navigationBuilder!.pageBuilder!(
               MaterialPageArgument(
                 child: settings.child!,
                 key: settings.key,
@@ -137,20 +134,18 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
                 maintainState: isLast ?? navigateObject._maintainState,
               ),
             );
-      assert(
-        () {
-          bool hasChild = true;
-          try {
-            hasChild = (p as dynamic).child is Widget;
-          } catch (e) {
-            hasChild = false;
-          }
-          if (!hasChild) {
-            throw 'Custom "pageBuilder" must have a child argument';
-          }
-          return true;
-        }(),
-      );
+      assert(() {
+        bool hasChild = true;
+        try {
+          hasChild = (p as dynamic).child is Widget;
+        } catch (e) {
+          hasChild = false;
+        }
+        if (!hasChild) {
+          throw 'Custom "pageBuilder" must have a child argument';
+        }
+        return true;
+      }());
 
       _pages.add(p);
       // if (settings.child != null) {
@@ -172,8 +167,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     if (_pages.isNotEmpty) {
       ResolvePathRouteUtil.globalBaseUrl =
           _pageSettingsList.last.rData!.baseLocation;
-      RouterObjects.navigationBuilder!.routeData =
-          _pageSettingsList.last.rData!.copyWith(navigationKey: _navigatorKey);
+      RouterObjects.navigationBuilder!.routeData = _pageSettingsList.last.rData!
+          .copyWith(navigationKey: _navigatorKey);
     }
 
     if (this != RouterObjects.rootDelegate) {
@@ -206,12 +201,10 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       _isDirty = true;
       notifyListeners();
     } else {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (timeStamp) {
-          _isDirty = false;
-          notifyListeners();
-        },
-      );
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _isDirty = false;
+        notifyListeners();
+      });
     }
   }
 
@@ -242,19 +235,17 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
   void setRouteStack(
     List<PageSettings> Function(List<PageSettings> pages) stack,
   ) {
-    final s = stack(routeStack).map(
-      (e) {
-        final name = e.name!;
-        if (name.startsWith('/')) {
-          return e;
-        }
-        return e.copyWith(
-          name: _resolvePathRouteUtil.urlName == '/'
-              ? '/$name'
-              : '${_resolvePathRouteUtil.urlName}/$name',
-        );
-      },
-    );
+    final s = stack(routeStack).map((e) {
+      final name = e.name!;
+      if (name.startsWith('/')) {
+        return e;
+      }
+      return e.copyWith(
+        name: _resolvePathRouteUtil.urlName == '/'
+            ? '/$name'
+            : '${_resolvePathRouteUtil.urlName}/$name',
+      );
+    });
 
     _pageSettingsList
       ..clear()
@@ -332,9 +323,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     );
   }
 
-  Map<RouteSettingsWithChildAndData, Widget>? _getChild(
-    PageSettings settings,
-  ) {
+  Map<RouteSettingsWithChildAndData, Widget>? _getChild(PageSettings settings) {
     if (settings.child == null) {
       final p = getPagesFromRouteSettings(
         settings: settings,
@@ -348,7 +337,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     }
     if (settings is RouteSettingsWithChildAndData) {
       return {
-        settings: getWidgetFromPages(pages: {settings.name!: settings})
+        settings: getWidgetFromPages(pages: {settings.name!: settings}),
       };
     }
     if (settings.name != null) {
@@ -376,11 +365,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
         child: settings.child,
       );
       return {
-        s: getWidgetFromPages(
-          pages: {
-            settings.name!: s,
-          },
-        ),
+        s: getWidgetFromPages(pages: {settings.name!: s}),
       };
     }
     return null;
@@ -399,7 +384,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
             initialEntries: [
               OverlayEntry(
                 builder: (_) {
-                  return _builder!(
+                  return _builder(
                     Navigator(
                       key: navigatorKey,
                       onPopPage: _onPopPage,
@@ -407,8 +392,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
                       transitionDelegate: DefaultTransitionDelegateImp(),
                       observers: RouterObjects.navigatorObservers.isNotEmpty
                           ? RouterObjects.navigatorObservers
-                              .map((e) => _SubNavigatorObserverDelegate(e))
-                              .toList()
+                                .map((e) => _SubNavigatorObserverDelegate(e))
+                                .toList()
                           : const [],
                     ),
                   );
@@ -419,7 +404,7 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
         );
       }
 
-      return _builder!(
+      return _builder(
         Navigator(
           key: navigatorKey,
           onPopPage: _onPopPage,
@@ -427,8 +412,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
           transitionDelegate: DefaultTransitionDelegateImp(),
           observers: RouterObjects.navigatorObservers.isNotEmpty
               ? RouterObjects.navigatorObservers
-                  .map((e) => _SubNavigatorObserverDelegate(e))
-                  .toList()
+                    .map((e) => _SubNavigatorObserverDelegate(e))
+                    .toList()
               : const [],
         ),
       );
@@ -471,8 +456,9 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
       if (_lastLeafConfiguration!.rData!.navigatorKey != navigatorKey) {
         // This is a work around to get the value of Route.willHandlePopInternally
         // So that if the route can close a drawer for example, it will do it
-        _lastLeafConfiguration!.rData!.navigatorKey!.currentState
-            ?.pop(RouterDelegateImp);
+        _lastLeafConfiguration!.rData!.navigatorKey!.currentState?.pop(
+          RouterDelegateImp,
+        );
       }
       if (_willHandlePopInternally != null) {
         final didPop = _willHandlePopInternally!.didPop(result);
@@ -541,8 +527,9 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
   bool _canPopUntil(String untilRouteName) {
     // final index = _pageSettingsList.indexWhere(
     //     (e) => e.name! == RouterObjects.trimLastSlash(untilRouteName));
-    if (_pageSettingsList
-        .any((e) => e.name! == RouterObjects.trimLastSlash(untilRouteName))) {
+    if (_pageSettingsList.any(
+      (e) => e.name! == RouterObjects.trimLastSlash(untilRouteName),
+    )) {
       return true;
     }
     return false;
@@ -633,8 +620,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
     _completers.remove(routeName)?.complete(result);
     _pageSettingsList.removeAt(index);
     updateRouteStack();
-    RouterObjects.navigationBuilder!.routeData =
-        _lastLeafConfiguration!.rData!.copyWith(navigationKey: _navigatorKey);
+    RouterObjects.navigationBuilder!.routeData = _lastLeafConfiguration!.rData!
+        .copyWith(navigationKey: _navigatorKey);
     return true;
   }
 
@@ -647,7 +634,8 @@ class RouterDelegateImp extends RouterDelegate<PageSettings>
         // twice the old way
         bool? canBack =
             RouterObjects.navigationBuilder!.onBack?.call(routeDate) ?? true;
-        canBack = canBack &&
+        canBack =
+            canBack &&
             (RouterObjects._canNavigateBackScoped[routeDate.location]?.call() ??
                 true);
         if (canBack == false) {
@@ -727,28 +715,32 @@ class MaterialPageImp<T> extends MaterialPage<T> {
     Object? arguments,
     String? restorationId,
   }) : super(
-          child: child,
-          maintainState: maintainState,
-          fullscreenDialog: fullscreenDialog,
-          key: key,
-          name: name,
-          arguments: arguments,
-          restorationId: restorationId,
-        );
+         child: child,
+         maintainState: maintainState,
+         fullscreenDialog: fullscreenDialog,
+         key: key,
+         name: name,
+         arguments: arguments,
+         restorationId: restorationId,
+       );
 
   final Widget Function(
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  )? customBuildTransitions;
+  )?
+  customBuildTransitions;
   final Duration? transitionDuration;
   final bool useTransition;
   @override
   Route<T> createRoute(BuildContext context) {
-    final shouldUseCupertinoPage = RouterObjects._shouldUseCupertinoPage ||
+    final shouldUseCupertinoPage =
+        RouterObjects._shouldUseCupertinoPage ||
         Localizations.of<MaterialLocalizations>(
-                context, MaterialLocalizations) ==
+              context,
+              MaterialLocalizations,
+            ) ==
             null;
     if (shouldUseCupertinoPage) {
       return PageBasedCupertinoPageRoute<T>(
@@ -774,8 +766,8 @@ class PageBasedMaterialPageRoute<T> extends PageRoute<T>
     required this.customBuildTransitions,
     required Duration? transitionDuration,
     this.useTransition = false,
-  })  : _transitionDuration = transitionDuration,
-        super(settings: page) {
+  }) : _transitionDuration = transitionDuration,
+       super(settings: page) {
     assert(opaque);
   }
   final bool useTransition;
@@ -824,17 +816,15 @@ class PageBasedMaterialPageRoute<T> extends PageRoute<T>
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  )? customBuildTransitions;
+  )?
+  customBuildTransitions;
 
   final Duration? _transitionDuration;
 
   @override
   Duration get transitionDuration {
     if (useTransition && RouterObjects.isTransitionAnimated != false) {
-      return _transitionDuration ??
-          const Duration(
-            milliseconds: 300,
-          );
+      return _transitionDuration ?? const Duration(milliseconds: 300);
     }
     return Duration.zero;
   }
@@ -887,8 +877,8 @@ class PageBasedCupertinoPageRoute<T> extends PageRoute<T>
     required this.customBuildTransitions,
     required Duration? transitionDuration,
     this.useTransition = false,
-  })  : _transitionDuration = transitionDuration,
-        super(settings: page) {
+  }) : _transitionDuration = transitionDuration,
+       super(settings: page) {
     assert(opaque);
   }
   final bool useTransition;
@@ -923,16 +913,14 @@ class PageBasedCupertinoPageRoute<T> extends PageRoute<T>
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  )? customBuildTransitions;
+  )?
+  customBuildTransitions;
   final Duration? _transitionDuration;
 
   @override
   Duration get transitionDuration {
     if (useTransition && RouterObjects.isTransitionAnimated != false) {
-      return _transitionDuration ??
-          const Duration(
-            milliseconds: 300,
-          );
+      return _transitionDuration ?? const Duration(milliseconds: 300);
     }
     return Duration.zero;
   }

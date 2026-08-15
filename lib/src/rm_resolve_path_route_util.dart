@@ -1,10 +1,7 @@
 part of 'navigation_builder.dart';
 
 class ResolvePathRouteUtil {
-  ResolvePathRouteUtil({
-    this.urlName = '/',
-    this.routeName = '/',
-  });
+  ResolvePathRouteUtil({this.urlName = '/', this.routeName = '/'});
   final String urlName;
   final String routeName;
   String absolutePath = '';
@@ -71,8 +68,9 @@ class ResolvePathRouteUtil {
     final absolutePath = setAbsoluteUrlPath(settings.name!);
     final uri = Uri.parse(absolutePath);
     assert(uri.path.isNotEmpty);
-    final queryParameters =
-        uri.queryParameters.isNotEmpty ? uri.queryParameters : queryParams;
+    final queryParameters = uri.queryParameters.isNotEmpty
+        ? uri.queryParameters
+        : queryParams;
     final arguments = settings.arguments;
 
     inRoutes ??= routes;
@@ -246,7 +244,8 @@ class _ResolveLocation {
       final matched = <String, RouteSettingsWithChildAndData>{};
       RouterObjects.navigationBuilder?.routeData = routeData;
       if (page is! Redirect && path is! RouteWidget) {
-        page = RouterObjects.navigationBuilder?.redirectTo?.call(routeData) ??
+        page =
+            RouterObjects.navigationBuilder?.redirectTo?.call(routeData) ??
             page;
       }
       if (page is Redirect) {
@@ -282,7 +281,7 @@ class _ResolveLocation {
         return matched;
       }
       if (page is RouteWidget) {
-        page = page.copyWith(page.builder ?? (_) => _);
+        page = page.copyWith(page.builder ?? (c) => c);
         final pages = page.initialize();
         if (pages == null && page._routes.isNotEmpty) {
           return null;
@@ -313,10 +312,7 @@ class _ResolveLocation {
 
     Map<String, RouteSettingsWithChildAndData> m = {};
     results.forEach((routeData, widget) {
-      final r = fn(
-        page: widget,
-        routeData: routeData,
-      );
+      final r = fn(page: widget, routeData: routeData);
       if (redirectedFrom.isNotEmpty) {
         redirectedFrom.clear();
       }
@@ -417,9 +413,7 @@ class _ResolveLocation {
     }
 
     if (skipHomeSlash) {
-      results = {
-        results.keys.last: results.values.last,
-      };
+      results = {results.keys.last: results.values.last};
     }
     final pages = <RouteData, Widget>{};
 
@@ -467,9 +461,7 @@ class _ResolveLocation {
     required String routeRedirectedFrom,
     required RouteData routeData,
   }) {
-    redirectedFrom.add(
-      routeData.copyWith(subLocation: routeRedirectedFrom),
-    );
+    redirectedFrom.add(routeData.copyWith(subLocation: routeRedirectedFrom));
 
     final absolutePath = util.setAbsoluteUrlPath(to);
     final uri = Uri.parse(absolutePath);
@@ -538,8 +530,8 @@ class _ResolveLocation {
     }
     final bool addQueryParam =
         pathUrlSegments.length > 1 && pathUrlSegments.last == ""
-            ? routeUriSegments.length + 1 == pathUrlSegments.length
-            : routeUriSegments.length == pathUrlSegments.length;
+        ? routeUriSegments.length + 1 == pathUrlSegments.length
+        : routeUriSegments.length == pathUrlSegments.length;
     if (routeUriSegments.isEmpty) {
       return RouteData(
         pathEndsWithSlash: remainingUrlSegments.isNotEmpty || pathEndsWithSlash,

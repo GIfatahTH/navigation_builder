@@ -2,9 +2,9 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'common/logger.dart';
@@ -65,7 +65,8 @@ abstract class NavigationBuilder {
       Animation<double> animation,
       Animation<double> secondAnimation,
       Widget child,
-    )? transitionsBuilder,
+    )?
+    transitionsBuilder,
     Duration? transitionDuration,
     Redirect? Function(RouteData data)? onNavigate,
     bool? Function(RouteData? data)? onNavigateBack,
@@ -99,14 +100,14 @@ abstract class NavigationBuilder {
   /// Predefined set of route transition animation
   static set transitionsBuilder(
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)
-        value,
+    value,
   ) {
     navigateObject.transitionsBuilder = value;
   }
 
   static set pageRouteBuilder(
-          PageRoute<dynamic> Function(Widget, RouteSettings?) value) =>
-      navigateObject.pageRouteBuilder = value;
+    PageRoute<dynamic> Function(Widget, RouteSettings?) value,
+  ) => navigateObject.pageRouteBuilder = value;
   static final transitions = transitionsObject;
 
   ///Get an active navigation [BuildContext].
@@ -133,8 +134,10 @@ abstract class NavigationBuilder {
     String? subRouteName,
   }) {
     if (navigationBuilderMockedInstance != null) {
-      navigationBuilderMockedInstance!
-          .setRouteStack(stack, subRouteName: subRouteName);
+      navigationBuilderMockedInstance!.setRouteStack(
+        stack,
+        subRouteName: subRouteName,
+      );
     }
     return navigateObject.setRouteStack(stack, subRouteName: subRouteName);
   }
@@ -175,7 +178,8 @@ abstract class NavigationBuilder {
       Animation<double> animation,
       Animation<double> secondAnimation,
       Widget child,
-    )? transitionsBuilder,
+    )?
+    transitionsBuilder,
   }) {
     final r = navigateObject.toNamed<T>(
       routeName,
@@ -329,10 +333,7 @@ abstract class NavigationBuilder {
           maintainState: maintainState,
         );
       } else {
-        to(
-          path,
-          maintainState: maintainState,
-        );
+        to(path, maintainState: maintainState);
       }
       if (navigationBuilderMockedInstance != null) {
         navigationBuilderMockedInstance!.toDeeply(
@@ -358,7 +359,7 @@ abstract class NavigationBuilder {
     bool fullscreenDialog = false,
     bool maintainState = true,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transitionsBuilder,
+    transitionsBuilder,
   }) {
     final r = navigateObject.toReplacementNamed<T, TO>(
       routeName,
@@ -715,8 +716,12 @@ class NavigationBuilderImp extends NavigationBuilder {
     required Map<String, Widget Function(RouteData data)> routes,
     required Widget Function(RouteData)? unknownRoute,
     required Widget Function(
-            BuildContext, Animation<double>, Animation<double>, Widget)?
-        transitionsBuilder,
+      BuildContext,
+      Animation<double>,
+      Animation<double>,
+      Widget,
+    )?
+    transitionsBuilder,
     required Duration? transitionDuration,
     required Widget Function(Widget child)? builder,
     required String? initialRoute,
@@ -753,9 +758,9 @@ class NavigationBuilderImp extends NavigationBuilder {
     if (startRoute != null) {
       RouterObjects._initialRouteValue = startRoute;
     }
-    routeInformationParser.parseRouteInformation(RouteInformation(
-      uri: Uri.parse(RouterObjects._initialRouteValue ?? '/'),
-    ));
+    routeInformationParser.parseRouteInformation(
+      RouteInformation(uri: Uri.parse(RouterObjects._initialRouteValue ?? '/')),
+    );
   }
 
   @override
@@ -795,7 +800,7 @@ class NavigationBuilderImp extends NavigationBuilder {
       return null;
     }
     return (RouteData data) {
-      return _redirectTo!(data);
+      return _redirectTo(data);
     };
   }
 
@@ -804,17 +809,15 @@ class NavigationBuilderImp extends NavigationBuilder {
     if (RouterObjects.rootDelegate == null) return;
     final toLocation = _redirectTo?.call(routeData);
     if (toLocation is Redirect && toLocation.to != null) {
-      setRouteStack(
-        (pages) {
-          pages.clear();
-          return pages.to(
-            toLocation.to!,
-            arguments: routeData.arguments,
-            queryParams: routeData.queryParams,
-            isStrictMode: true,
-          );
-        },
-      );
+      setRouteStack((pages) {
+        pages.clear();
+        return pages.to(
+          toLocation.to!,
+          arguments: routeData.arguments,
+          queryParams: routeData.queryParams,
+          isStrictMode: true,
+        );
+      });
     }
   }
 

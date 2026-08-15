@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
 // If your business logic depends on NavigationBuilder, you can mock it for

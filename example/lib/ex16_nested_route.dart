@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 import 'package:states_rebuilder/scr/state_management/state_management.dart';
 
@@ -11,34 +11,31 @@ final NavigationBuilder navigator = NavigationBuilder.create(
   builder: (_) => const Home(),
   // transitionsBuilder: NavigationBuilder.transitions.none(),
   transitionsBuilder: (_, animation, __, child) {
-    return ScaleTransition(
-      scale: animation,
-      child: child,
-    );
+    return ScaleTransition(scale: animation, child: child);
   },
   transitionDuration: 1.seconds,
   // shouldUseCupertinoPage: true,
   routes: {
     '/': (data) => data.redirectTo('/dashboard'),
     '/dashboard': (data) => RouteWidget(
-          builder: (_) => const Dash(),
+      builder: (_) => const Dash(),
+      routes: {
+        '/': (data) => const DashHome(),
+        '/invoices': (data) => RouteWidget(
+          builder: (_) => const Invoices(),
           routes: {
-            '/': (data) => const DashHome(),
-            '/invoices': (data) => RouteWidget(
-                  builder: (_) => const Invoices(),
-                  routes: {
-                    '/': (data) => data.redirectTo('/daily'),
-                    // '/': (data) => data.redirectTo('/dashboard/invoices/daily'),
-                    // '/': (data) => data.redirectTo('/about'),
-                    '/daily': (data) => const DailyInvoices(),
-                    '/weekly': (data) => const WeeklyInvoices(),
-                    // '/weekly': (data) => data.redirectTo('/dashboard'),
-                    '/monthly': (data) => const MonthlyInvoices(),
-                  },
-                ),
-            '/team': (data) => const Team(),
+            '/': (data) => data.redirectTo('/daily'),
+            // '/': (data) => data.redirectTo('/dashboard/invoices/daily'),
+            // '/': (data) => data.redirectTo('/about'),
+            '/daily': (data) => const DailyInvoices(),
+            '/weekly': (data) => const WeeklyInvoices(),
+            // '/weekly': (data) => data.redirectTo('/dashboard'),
+            '/monthly': (data) => const MonthlyInvoices(),
           },
         ),
+        '/team': (data) => const Team(),
+      },
+    ),
     '/about': (data) => const About(),
     '/support': (data) => const Support(),
   },
@@ -73,6 +70,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: navigator.routerConfig,
+      localizationDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }

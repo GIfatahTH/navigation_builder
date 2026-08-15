@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
 // The same example as the last one using imperative navigation
@@ -26,9 +26,11 @@ final navigator = NavigationBuilder.create(
   //
   // initialLocation: '/books/2',
   builder: (routerOutlet) {
-    return Builder(builder: (context) {
-      return routerOutlet;
-    });
+    return Builder(
+      builder: (context) {
+        return routerOutlet;
+      },
+    );
   },
   routes: {
     '/': (data) => data.redirectTo('/books'),
@@ -64,10 +66,7 @@ class BooksApp extends StatelessWidget {
 class BooksListScreen extends StatelessWidget {
   final List<Book> books;
 
-  const BooksListScreen({
-    Key? key,
-    required this.books,
-  }) : super(key: key);
+  const BooksListScreen({Key? key, required this.books}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,7 @@ class BooksListScreen extends StatelessWidget {
                 final bookId = books.indexOf(book);
                 navigator.to('/books/$bookId');
               },
-            )
+            ),
         ],
       ),
     );
@@ -92,10 +91,7 @@ class BooksListScreen extends StatelessWidget {
 
 class BookDetailsScreen extends StatelessWidget {
   final Book book;
-  const BookDetailsScreen({
-    required this.book,
-    Key? key,
-  }) : super(key: key);
+  const BookDetailsScreen({required this.book, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

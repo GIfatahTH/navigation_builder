@@ -33,7 +33,8 @@ abstract class RouterObjects {
   static NavigationBuilderImp? navigationBuilder;
 
   static Map<Uri, Widget Function(RouteData data)> transformRoutes(
-      Map<String, Widget Function(RouteData data)> r) {
+    Map<String, Widget Function(RouteData data)> r,
+  ) {
     return r.map((key, value) {
       assert(key.startsWith('/'));
       return MapEntry(Uri.parse(key), value);
@@ -46,8 +47,12 @@ abstract class RouterObjects {
     required Map<String, Widget Function(RouteData data)> routes,
     required Widget Function(RouteData data)? unknownRoute,
     required Widget Function(
-            BuildContext, Animation<double>, Animation<double>, Widget)?
-        transitionsBuilder,
+      BuildContext,
+      Animation<double>,
+      Animation<double>,
+      Widget,
+    )?
+    transitionsBuilder,
     required Duration? transitionDuration,
     required Widget Function(Widget child)? builder,
     required String? initialRoute,
@@ -69,12 +74,11 @@ abstract class RouterObjects {
       routes: routers!,
       builder: builder != null
           ? (route) {
-              final r = navigationBuilder?.routeData ??
+              final r =
+                  navigationBuilder?.routeData ??
                   ParentToSubRouteMessage.parentToSubRouteMessage.routeData;
               return SubRoute._(
-                key: ValueKey(
-                  r._subLocation,
-                ),
+                key: ValueKey(r._subLocation),
                 child: builder(route),
                 route: route,
                 routeData: r,
@@ -106,8 +110,9 @@ abstract class RouterObjects {
       routerDelegate: rootDelegate!,
       routeInformationParser: routeInformationParser,
       routeInformationProvider: PlatformRouteInformationProvider(
-        initialRouteInformation:
-            RouteInformation(uri: Uri.parse(initialRoute ?? '/')),
+        initialRouteInformation: RouteInformation(
+          uri: Uri.parse(initialRoute ?? '/'),
+        ),
       ),
     );
   }
@@ -115,8 +120,9 @@ abstract class RouterObjects {
   static RouterDelegateImp? rootDelegate;
   static void clearStack() => rootDelegate?._pageSettingsList.clear();
 
-  static List<RouterDelegateImp>? getActiveSubRoutes(
-      [RouterDelegateImp? untilDelegate]) {
+  static List<RouterDelegateImp>? getActiveSubRoutes([
+    RouterDelegateImp? untilDelegate,
+  ]) {
     RouterDelegateImp? delegate = rootDelegate;
     if (delegate == null) {
       return null;
@@ -253,12 +259,12 @@ abstract class RouterObjects {
         exact = i;
       } else if (routeName.startsWith('${page._delegateName}/')) {
         if (startsWithPlusSlashName.length < page._delegateName!.length) {
-          startsWithPlusSlashName = page._delegateName!;
+          startsWithPlusSlashName = page._delegateName;
           startsWithPlusSlash = i;
         }
       } else if (routeName.startsWith('${page._delegateName}')) {
         if (startsWithName.length < page._delegateName!.length) {
-          startsWithName = page._delegateName!;
+          startsWithName = page._delegateName;
           startsWith = i;
         }
       }
@@ -313,9 +319,8 @@ abstract class RouterObjects {
   ]) {
     final activeSubRoutes = getActiveSubRoutes(delegate);
     if (activeSubRoutes ==
-            null /*||
-        delegate != null && !activeSubRoutes.contains(delegate)*/
-        ) {
+        null /*||
+        delegate != null && !activeSubRoutes.contains(delegate)*/ ) {
       return null;
     }
 
@@ -344,8 +349,10 @@ abstract class RouterObjects {
     return name;
   }
 
-  static bool _backUntil(String untilRouteName,
-      [List<RouterDelegateImp>? activeSubRoutes]) {
+  static bool _backUntil(
+    String untilRouteName, [
+    List<RouterDelegateImp>? activeSubRoutes,
+  ]) {
     activeSubRoutes ??= RouterObjects.getActiveSubRoutes();
     if (activeSubRoutes == null) {
       return false;
@@ -367,7 +374,9 @@ abstract class RouterObjects {
   static final Map<String, bool? Function()> _canNavigateBackScoped = {};
 
   static VoidCallback _addToCanNavigateCallBack(
-      bool? Function() fn, String location) {
+    bool? Function() fn,
+    String location,
+  ) {
     _canNavigateBackScoped[location] = fn;
     return () {
       _canNavigateBackScoped.remove(location);

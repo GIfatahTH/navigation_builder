@@ -1,16 +1,18 @@
 name: navigation_builder
 description: A Flutter Navigation 2 with the ease of Navigation 1.
-version: 0.0.4
+version: 0.0.4-dev3
 homepage: https://github.com/GIfatahTH/navigation_builder
 
 environment:
-  sdk: '>=2.18.2 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.13.0 <4.0.0'
+  flutter: ">=3.14.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_ui: ^1.0.0
+  material_ui: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

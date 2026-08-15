@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:adaptive_navigation/adaptive_navigation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 import '../../ex18_books_app.dart';
 

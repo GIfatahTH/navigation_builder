@@ -1,3 +1,5 @@
+## 0.0.4-dev3
+* Update to fit Flutter 3.14 release
 ## 0.0.4-dev2
 * Update to fit Flutter 3.19 release
 ## 0.0.3

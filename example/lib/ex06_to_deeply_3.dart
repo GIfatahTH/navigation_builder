@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:navigation_builder/navigation_builder.dart';
 
 // The same as example ex04_to_deeply1 ad ex05_to_deeply2 but written using

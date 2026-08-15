@@ -8,7 +8,7 @@ import 'package:example/ex16_books_app/screens/books_page/books_page.dart';
 import 'package:example/ex16_books_app/screens/error_page/error_page.dart';
 import 'package:example/ex16_books_app/screens/settings_page/settings_page.dart';
 import 'package:example/ex16_books_app/screens/sign_in_page/sign_in_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
