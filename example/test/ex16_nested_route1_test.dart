@@ -458,7 +458,7 @@ class DashHome extends StatelessWidget {
     return Center(
       child: Text(
         'DashHome',
-        style: Theme.of(context).textTheme.headline1,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }
@@ -496,7 +496,7 @@ class Team extends StatelessWidget {
       child: Center(
         child: Text(
           'Team Page',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );
@@ -513,7 +513,7 @@ class About extends StatelessWidget {
       child: Center(
         child: Text(
           'About Page',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );
@@ -530,7 +530,7 @@ class Support extends StatelessWidget {
       child: Center(
         child: Text(
           'Support Page',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );
@@ -547,7 +547,7 @@ class DailyInvoices extends StatelessWidget {
       child: Center(
         child: Text(
           'Daily Invoices',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );
@@ -564,7 +564,7 @@ class WeeklyInvoices extends StatelessWidget {
       child: Center(
         child: Text(
           'Weekly Invoices',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );
@@ -581,7 +581,7 @@ class MonthlyInvoices extends StatelessWidget {
       child: Center(
         child: Text(
           'Monthly Invoices',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
     );

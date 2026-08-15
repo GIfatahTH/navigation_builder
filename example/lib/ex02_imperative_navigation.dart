@@ -25,6 +25,11 @@ final navigator = NavigationBuilder.create(
   // first started (TODO: Uncomment the next line and restart the app)
   //
   // initialLocation: '/books/2',
+  builder: (routerOutlet) {
+    return Builder(builder: (context) {
+      return routerOutlet;
+    });
+  },
   routes: {
     '/': (data) => data.redirectTo('/books'),
     '/books': (data) => BooksListScreen(books: books),
@@ -101,8 +106,8 @@ class BookDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(book.title, style: Theme.of(context).textTheme.headline6),
-            Text(book.author, style: Theme.of(context).textTheme.subtitle1),
+            Text(book.title, style: Theme.of(context).textTheme.titleLarge),
+            Text(book.author, style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
       ),
