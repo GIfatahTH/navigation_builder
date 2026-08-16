@@ -41,7 +41,6 @@ dependencies:
   # navigation_builder: ^0.0.4-dev
   states_rebuilder: ^7.0.0-dev1 
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
